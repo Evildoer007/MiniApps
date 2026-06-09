@@ -1,0 +1,154 @@
+<!-- 股指期货升贴水 — 主页面 -->
+<view class="app-container">
+
+  <!-- Header -->
+  <view class="app-header">
+    <view class="header-top">
+      <view class="logo-row">
+        <image class="eb-logo" src="../../images/logo.png" mode="heightFix" alt="光大证券"></image>
+      </view>
+      <view class="header-right">
+        <text>金融创新业务总部</text>
+        <text>内部使用请勿外传</text>
+      </view>
+    </view>
+    <view class="app-title">期货升贴水</view>
+    <view class="update-time">
+      <view class="update-dot {{updateDotClass}}"></view>
+      <text>{{updateTimeText}}</text>
+    </view>
+
+    <!-- 工具栏 -->
+    <view class="header-toolbar">
+      <button class="btn btn-primary" bindtap="onManualRefresh">🔄 刷新</button>
+      <label class="toggle-label">
+        <switch class="toggle-switch" checked="{{autoRefresh}}" bindchange="onAutoRefreshChange" color="#2563eb" />
+        <text>自动刷新</text>
+      </label>
+    </view>
+  </view>
+
+  <!-- 标签栏 -->
+  <view class="tab-bar">
+    <view class="tab-item {{currentTab === 'index' ? 'active' : ''}}" data-tab="index" bindtap="onTabChange">
+      <text>股指期货</text>
+    </view>
+    <view class="tab-item {{currentTab === 'commodity' ? 'active' : ''}}" data-tab="commodity" bindtap="onTabChange">
+      <text>商品期货</text>
+    </view>
+  </view>
+
+  <!-- 商品期货品种选择器 -->
+  <view class="commodity-selector" wx:if="{{currentTab === 'commodity'}}">
+    <picker mode="selector" range="{{commodityList}}" value="{{commodityIndex}}" bindchange="onCommodityChange">
+      <view class="picker-display">
+        <text>{{commodityList[commodityIndex]}}</text>
+        <text class="picker-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 品种卡片列表 -->
+  <view class="cards-grid">
+    <view class="card" wx:for="{{products}}" wx:key="code">
+
+      <!-- 卡片头部 -->
+      <view class="card-header">
+        <view class="product-tag">
+          <text class="product-code">{{item.display}}</text>
+          <text class="product-name">{{item.name}}</text>
+        </view>
+        <view class="spot-price">
+          {{item.spotLabel}} <text>{{item.spotPrice}}</text>
+        </view>
+      </view>
+
+      <!-- 91/182 插值参考行（仅股指期货） -->
+      <view class="basis-ref-row" wx:if="{{currentTab !== 'commodity'}}">
+        <view class="basis-ref-item">
+          91 <text class="basis-ref-val {{item.ref91Class}}">{{item.ref91}}</text>
+        </view>
+        <view class="basis-ref-item">
+          前91 <text class="basis-ref-val {{item.prev91Class}}">{{item.prev91}}</text>
+        </view>
+        <view class="basis-ref-item">
+          Δ91 <text class="basis-ref-val {{item.chg91Class}}">{{item.chg91}}</text>
+        </view>
+      </view>
+      <view class="basis-ref-row prev" wx:if="{{currentTab !== 'commodity'}}">
+        <view class="basis-ref-item">
+          182 <text class="basis-ref-val {{item.ref182Class}}">{{item.ref182}}</text>
+        </view>
+        <view class="basis-ref-item">
+          前182 <text class="basis-ref-val {{item.prev182Class}}">{{item.prev182}}</text>
+        </view>
+        <view class="basis-ref-item">
+          Δ182 <text class="basis-ref-val {{item.chg182Class}}">{{item.chg182}}</text>
+        </view>
+      </view>
+
+      <!-- 期货期限结构表格 -->
+      <view class="section-title">
+        <view class="section-title-bar"></view>
+        <text>期货期限结构</text>
+      </view>
+      <view class="contract-table">
+        <view class="table-hd">
+          <text class="col-contract">合约</text>
+          <text class="col-price">最新</text>
+          <text class="col-basis">升贴水</text>
+          <text class="col-ann">年化%</text>
+          <text class="col-days">到期</text>
+        </view>
+        <view class="table-row {{ct.isFront ? 'is-front-month' : ''}}"
+              wx:for="{{item.contracts}}" wx:for-item="ct" wx:key="displayCode">
+          <text class="col-contract">{{ct.monthLabel}}</text>
+          <text class="col-price">{{ct.futPrice}}</text>
+          <text class="col-basis {{ct.futBasisClass}}">{{ct.futBasis}}</text>
+          <text class="col-ann {{ct.futAnnClass}}">{{ct.futAnn}}</text>
+          <text class="col-days">{{ct.daysToExpiry}}天</text>
+        </view>
+      </view>
+
+      <!-- 错误状态 -->
+      <view class="card-status" wx:if="{{item.hasError}}">
+        <text>⚠️ 数据暂不可用</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 期限结构曲线图 -->
+  <view class="chart-section">
+    <view class="section-title">
+      <view class="section-title-bar"></view>
+      <text>年化升贴水期限结构</text>
+    </view>
+    <view class="chart-wrapper">
+      <canvas type="2d" id="termChart" class="chart-canvas"></canvas>
+    </view>
+    <view class="chart-legend">
+      <view class="legend-grid">
+        <view class="legend-item" wx:for="{{chartLegend}}" wx:key="code">
+          <view class="legend-color" style="background:{{item.color}}"></view>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Footer -->
+  <view class="app-footer">
+    <view class="footer-credit">Designed by Jason from 光大证券 金融创新业务总部</view>
+  </view>
+
+</view>
+
+<!-- Loading 遮罩 -->
+<view class="loading-overlay" wx:if="{{loadingVisible}}">
+  <view class="loading-spinner"></view>
+</view>
+
+<!-- Toast -->
+<view class="toast-container" wx:if="{{toastVisible}}">
+  <view class="toast {{toastType}}">{{toastMessage}}</view>
+</view>

@@ -1,0 +1,20 @@
+<!-- ec-canvas 组件模板 -->
+<view class="ec-canvas-container">
+  <canvas
+    wx:if="{{!disableTouch}}"
+    type="2d"
+    id="ec-canvas"
+    class="ec-canvas"
+    canvas-id="{{canvasId}}"
+    bindtouchstart="{{ec.touchStart}}"
+    bindtouchmove="{{ec.touchMove}}"
+    bindtouchend="{{ec.touchEnd}}"
+  ></canvas>
+  <canvas
+    wx:else
+    type="2d"
+    id="ec-canvas"
+    class="ec-canvas"
+    canvas-id="{{canvasId}}"
+  ></canvas>
+</view>

@@ -1,0 +1,16 @@
+{
+  "name": "miniapp",
+  "version": "1.0.0",
+  "description": "``` miniapp/ ├── app.js              # 小程序入口 ├── app.json            # 全局配置 ├── app.wxss            # 全局样式 ├── pages/ │   └── index/ │       ├── index.wxml  # 主页面模板 │       ├── index.wxss  # 主页面样式 │       ├── index.js    # 主页面逻辑 │       └── index.json  # 页面配置（注册 ec-canvas 组件） ├── components/ │   └── ec-canvas/      # ECharts 自定义组件 ├── utils/ │   ├── api.js          # 网络请求（wx.request） │   ├── calculator.js   # 升贴水计算 │   ├── contract.js     # 合约代码生成 │   ├── spline.js       # Catmull-Rom 样条插值 │   └── optionsApi.js   # 期权模拟数据 └── README.md ```",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "echarts": "^5.5.0"
+  }
+}
