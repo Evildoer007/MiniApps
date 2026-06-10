@@ -34,7 +34,7 @@ page {
 /* ==================== Container ==================== */
 .app-container {
   width: 100%;
-  padding: 20rpx;
+  padding: 20rpx 20rpx 180rpx;
   display: flex;
   flex-direction: column;
   gap: 20rpx;
@@ -57,11 +57,30 @@ page {
 
 .logo-row {
   display: flex;
+  align-items: center;
+  gap: 12rpx;
 }
 
-.eb-logo {
-  height: 64rpx;
-  width: auto;
+.btn-logout-top {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #e0314b;
+  background: none;
+  border: 1px solid rgba(224, 49, 75, 0.3);
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  line-height: 1.4;
+}
+
+.btn-admin-top {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #2563eb;
+  background: none;
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  line-height: 1.4;
 }
 
 .header-right {
@@ -71,6 +90,13 @@ page {
   gap: 2rpx;
   font-size: 18rpx;
   color: var(--text-muted);
+}
+
+.login-user-tag {
+  font-size: 20rpx;
+  color: #1a1d26;
+  font-weight: 600;
+  margin-top: 2rpx;
 }
 
 .app-title {
@@ -315,6 +341,7 @@ page {
 .chart-wrapper {
   width: 100%;
   height: 480rpx;
+  overflow: hidden;
 }
 
 .chart-canvas {
@@ -356,7 +383,7 @@ page {
 }
 
 /* ==================== Footer ==================== */
-.app-footer { padding: 10rpx 0 36rpx; text-align: center; }
+.app-footer { padding: 10rpx 0 60rpx; text-align: center; }
 
 .toolbar {
   display: flex;
@@ -450,7 +477,7 @@ page {
 /*  断点 1: ≥ 360px  — 主流手机                                     */
 /* ================================================================ */
 @media (min-width: 360px) {
-  .app-container { padding: 24rpx; gap: 24rpx; }
+  .app-container { padding: 24rpx 24rpx 180rpx; gap: 24rpx; }
   .app-header { padding: 32rpx 0 8rpx; }
   .app-title { font-size: 40rpx; }
   .card { padding: 28rpx 24rpx 24rpx; border-radius: 20rpx; }
@@ -480,7 +507,7 @@ page {
   .app-container {
     max-width: 1080rpx;
     margin: 0 auto;
-    padding: 28rpx 24rpx;
+    padding: 28rpx 24rpx 180rpx;
     gap: 28rpx;
   }
 
@@ -517,7 +544,7 @@ page {
 @media (min-width: 768px) {
   .app-container {
     max-width: 1200rpx;
-    padding: 32rpx;
+    padding: 32rpx 32rpx 180rpx;
     gap: 32rpx;
   }
 

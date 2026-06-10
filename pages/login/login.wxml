@@ -1,0 +1,35 @@
+<!-- 登录页面 -->
+<view class="login-container">
+  <view class="login-card">
+    <view class="brand-area">
+      <text class="brand-sub">内部系统</text>
+    </view>
+
+    <!-- 表单 -->
+    <view class="form-area">
+      <view class="input-group">
+        <text class="input-label">用户名</text>
+        <input class="input-field" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
+      </view>
+      <view class="input-group">
+        <text class="input-label">密码</text>
+        <input class="input-field" type="password" placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
+      </view>
+
+      <button class="login-btn" bindtap="onLogin" loading="{{loading}}" disabled="{{loading}}">
+        登 录
+      </button>
+
+      <view class="extra-actions">
+        <text class="link-change-pwd" bindtap="onChangePassword">修改密码</text>
+      </view>
+
+      <text class="error-msg" wx:if="{{errorMsg}}">{{errorMsg}}</text>
+    </view>
+  </view>
+
+  <!-- Footer -->
+  <view class="login-footer">
+    <text>Designed by Jason</text>
+  </view>
+</view>

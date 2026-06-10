@@ -1,0 +1,55 @@
+/* 晨报页 */
+
+page {
+  background: #f0f2f5;
+  font-family: -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  font-size: 28rpx;
+  color: #1a1d26;
+}
+
+.page-scroll {
+  width: 100vw;
+  height: 100vh;
+  padding: 20rpx 20rpx 0;
+  box-sizing: border-box;
+}
+
+.bottom-gap { height: 160rpx; }
+
+/* Header */
+.app-header { text-align: center; padding: 28rpx 0 16rpx; }
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; }
+.logo-row { display: flex; align-items: center; gap: 12rpx; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2rpx; font-size: 18rpx; color: #9ca3af; }
+.login-user-tag { font-size: 20rpx; color: #1a1d26; font-weight: 600; margin-top: 2rpx; }
+.app-title { font-size: 38rpx; font-weight: 700; }
+.btn-logout-top { font-size: 20rpx; font-weight: 700; color: #e0314b; background: none; border: 1px solid rgba(224,49,75,.3); border-radius: 8rpx; padding: 4rpx 16rpx; }
+.btn-admin-top { font-size: 20rpx; font-weight: 600; color: #2563eb; background: none; border: 1px solid rgba(37,99,235,.4); border-radius: 8rpx; padding: 4rpx 16rpx; }
+
+/* 编辑器 */
+.editor-section { background: #fff; border-radius: 18rpx; padding: 24rpx; margin-top: 20rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06); }
+
+.report-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  background: #f5f6f8;
+  border: 1px solid #e5e7eb;
+  border-radius: 14rpx;
+  padding: 24rpx;
+  font-size: 30rpx;
+  line-height: 1.8;
+  box-sizing: border-box;
+}
+
+.editor-toolbar { display: flex; align-items: center; justify-content: space-between; margin-top: 20rpx; }
+.btn-save { background: linear-gradient(135deg,#2563eb,#1d4ed8); color: #fff; border: none; border-radius: 12rpx; padding: 16rpx 40rpx; font-size: 28rpx; font-weight: 600; }
+.btn-save[disabled] { opacity: .5; }
+.update-hint { font-size: 22rpx; color: #9ca3af; }
+
+/* 阅读区 */
+.reader-section { background: #fff; border-radius: 18rpx; padding: 32rpx 24rpx; margin-top: 20rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06); }
+.report-display { min-height: 400rpx; }
+.report-text { font-size: 30rpx; line-height: 1.8; white-space: pre-wrap; word-break: break-all; }
+.report-empty { display: flex; align-items: center; justify-content: center; min-height: 400rpx; }
+.empty-text { font-size: 30rpx; color: #9ca3af; }
+.report-meta { margin-top: 24rpx; padding-top: 20rpx; border-top: 1px solid #f0f0f0; text-align: right; }

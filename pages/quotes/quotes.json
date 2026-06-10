@@ -3,5 +3,5 @@
     "bottom-bar": "/components/bottom-bar/bottom-bar"
   },
   "navigationBarTitleText": "Jason金点子",
-  "enablePullDownRefresh": false
+  "disableScroll": true
 }

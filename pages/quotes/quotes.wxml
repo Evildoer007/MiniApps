@@ -1,0 +1,53 @@
+<!-- 晨报页面 -->
+<scroll-view scroll-y class="page-scroll">
+
+  <!-- Header -->
+  <view class="app-header">
+    <view class="header-top">
+      <view class="logo-row">
+        <button class="btn-logout-top" bindtap="onLogout">注销登录</button>
+        <button class="btn-admin-top" bindtap="onAdminPwd" wx:if="{{loginUser === 'Jason'}}">修改密码</button>
+      </view>
+      <view class="header-right">
+        <text>内部使用请勿外传</text>
+        <text class="login-user-tag">当前用户：{{loginUser}}</text>
+      </view>
+    </view>
+    <view class="app-title">晨报</view>
+  </view>
+
+  <!-- 管理员编辑区 -->
+  <view class="editor-section" wx:if="{{isAdmin}}">
+    <textarea
+      class="report-textarea"
+      value="{{reportContent}}"
+      placeholder="请输入今日晨报内容..."
+      bindinput="onContentInput"
+      maxlength="10000"
+      auto-height="{{true}}"
+    />
+    <view class="editor-toolbar">
+      <text class="update-hint" wx:if="{{lastUpdate}}">上次更新：{{lastUpdate}}</text>
+      <button class="btn-save" bindtap="onSave" loading="{{saving}}" disabled="{{saving}}">保存并发布</button>
+    </view>
+  </view>
+
+  <!-- 普通用户查看区 -->
+  <view class="reader-section" wx:else>
+    <view class="report-display" wx:if="{{reportContent}}">
+      <text class="report-text">{{reportContent}}</text>
+    </view>
+    <view class="report-empty" wx:else>
+      <text class="empty-text">暂无晨报内容</text>
+    </view>
+    <view class="report-meta" wx:if="{{lastUpdate}}">
+      <text class="update-hint">更新于 {{lastUpdate}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-gap"></view>
+
+</scroll-view>
+
+<!-- 底部导航栏 -->
+<bottom-bar active="quotes" bind:change="onBarChange"></bottom-bar>

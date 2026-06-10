@@ -1,9 +1,13 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/login/login",
+    "pages/index/index",
+    "pages/quotes/quotes",
+    "pages/change-password/change-password",
+    "pages/admin-password/admin-password"
   ],
   "window": {
-    "navigationBarTitleText": "期货升贴水",
+    "navigationBarTitleText": "Jason金点子",
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f5f6f8",

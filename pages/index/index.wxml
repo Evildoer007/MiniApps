@@ -5,11 +5,12 @@
   <view class="app-header">
     <view class="header-top">
       <view class="logo-row">
-        <image class="eb-logo" src="../../images/logo.png" mode="heightFix" alt="光大证券"></image>
+        <button class="btn-logout-top" bindtap="onLogout">注销登录</button>
+        <button class="btn-admin-top" bindtap="onAdminPwd" wx:if="{{loginUser === 'Jason'}}">修改密码</button>
       </view>
       <view class="header-right">
-        <text>金融创新业务总部</text>
         <text>内部使用请勿外传</text>
+        <text class="login-user-tag">当前用户：{{loginUser}}</text>
       </view>
     </view>
     <view class="app-title">期货升贴水</view>
@@ -138,7 +139,7 @@
 
   <!-- Footer -->
   <view class="app-footer">
-    <view class="footer-credit">Designed by Jason from 光大证券 金融创新业务总部</view>
+    <view class="footer-credit">Designed by Jason</view>
   </view>
 
 </view>
@@ -152,3 +153,6 @@
 <view class="toast-container" wx:if="{{toastVisible}}">
   <view class="toast {{toastType}}">{{toastMessage}}</view>
 </view>
+
+<!-- 底部导航栏 -->
+<bottom-bar active="basis" bind:change="onBarChange"></bottom-bar>

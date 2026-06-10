@@ -23,11 +23,12 @@ Page({
     updateTimeText: '正在加载...',
     updateDotClass: '',
     loadingVisible: true,
-    autoRefresh: true,
+    autoRefresh: false,
     chartReady: false,  // 图表是否就绪
     toastVisible: false,
     toastMessage: '',
-    toastType: ''
+    toastType: '',
+    loginUser: ''
   },
 
   activeProducts: {},
@@ -53,6 +54,16 @@ Page({
   },
 
   onShow: function () {
+    // 未登录则回到登录页
+    var app = getApp();
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' });
+      return;
+    }
+
+    // 同步当前用户名
+    this.setData({ loginUser: app.globalData.loginUser || '' });
+
     // 页面显示时恢复自动刷新（类似 visibilitychange）
     if (this.data.autoRefresh && !autoRefreshTimer) {
       this._startAutoRefresh();
@@ -626,6 +637,25 @@ Page({
     }
   },
 
+  onLogout: function () {
+    var that = this;
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      success: function (res) {
+        if (res.confirm) {
+          that._stopAutoRefresh();
+          var app = getApp();
+          app.logout();
+        }
+      }
+    });
+  },
+
+  onAdminPwd: function () {
+    wx.navigateTo({ url: '/pages/admin-password/admin-password' });
+  },
+
   onCommodityChange: function (e) {
     var index = e.detail.value;
     var product = contractUtil.getCommodityCodeByIndex(index);
@@ -646,6 +676,13 @@ Page({
 
     if (this.canvas) {
       this._updateChart();
+    }
+  },
+
+  onBarChange: function (e) {
+    if (e.detail.tab === 'quotes') {
+      this._stopAutoRefresh();
+      wx.redirectTo({ url: '/pages/quotes/quotes' });
     }
   }
 });
