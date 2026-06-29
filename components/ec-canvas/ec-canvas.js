@@ -94,12 +94,10 @@ Component({
       // echarts 需要从全局获取（由页面在 onLoad 时 require 并挂到 app.globalData）
       var echarts = getApp().globalData.echarts;
       if (!echarts) {
-        console.error('[ec-canvas] 未找到 echarts，请在 app.js 或页面中引入');
         return;
       }
 
       if (!canvasNode) {
-        console.error('[ec-canvas] canvasNode 未就绪');
         return;
       }
 
