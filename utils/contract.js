@@ -51,6 +51,16 @@ function getAvailableContractMonths() {
   var year = now.getFullYear();
   var month = now.getMonth() + 1;
 
+  // 若当月合约交割日已过，则以下月为起始
+  var deliveryThisMonth = getThirdFriday(year, month);
+  if (now > deliveryThisMonth) {
+    month++;
+    if (month > 12) {
+      month = 1;
+      year++;
+    }
+  }
+
   var months = [];
   var seen = {};
 
@@ -197,21 +207,28 @@ function getCommodityContractsForProduct(product, validMonths) {
   var now = new Date();
   var months = getCommodityContractMonths(validMonths);
 
-  return months.map(function (item) {
-    var year = item.year;
-    var month = item.month;
-    var deliveryDate = getFifteenthDay(year, month);
-    var daysToExpiry = Math.max(1, Math.ceil((deliveryDate - now) / (1000 * 60 * 60 * 24)));
-    return {
-      displayCode: getDisplayCode(product, year, month),
-      apiCode: getApiCode(product, year, month),
-      monthLabel: month + '月',
-      year: year,
-      month: month,
-      deliveryDate: deliveryDate,
-      daysToExpiry: daysToExpiry
-    };
-  });
+  return months
+    .map(function (item) {
+      var year = item.year;
+      var month = item.month;
+      var deliveryDate = getFifteenthDay(year, month);
+      var daysToExpiry = Math.ceil((deliveryDate - now) / (1000 * 60 * 60 * 24));
+      return {
+        displayCode: getDisplayCode(product, year, month),
+        apiCode: getApiCode(product, year, month),
+        monthLabel: month + '月',
+        year: year,
+        month: month,
+        deliveryDate: deliveryDate,
+        daysToExpiry: daysToExpiry
+      };
+    })
+    .filter(function (ct) { return ct.daysToExpiry > 0; })
+    .slice(0, 12)
+    .map(function (ct) {
+      ct.daysToExpiry = Math.max(1, ct.daysToExpiry);
+      return ct;
+    });
 }
 
 /**

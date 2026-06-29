@@ -243,7 +243,6 @@ Page({
       // 隐藏 loading
       that.setData({ loadingVisible: false });
     }).catch(function (err) {
-      console.error('数据刷新失败:', err);
       that.setData({ updateDotClass: 'error' });
       that._showToast(err.message || '数据加载失败', 'error');
       // 所有品种标为错误
@@ -369,7 +368,6 @@ Page({
       .fields({ node: true, size: true })
       .exec(function (res) {
         if (!res || !res[0] || !res[0].node) {
-          console.error('[index] Canvas 节点未找到');
           return;
         }
         that.canvas = res[0].node;
@@ -388,40 +386,10 @@ Page({
   },
 
   /**
-   * 用原生 Canvas 2D 绑制期限结构曲线
+   * 收集期限结构数据（不依赖 canvas）
+   * @returns {{ allData, yMin, yMax, keys }}
    */
-  _updateChart: function () {
-    var ctx = this.ctx;
-    if (!ctx) return;
-
-    var W = this.canvasWidth;
-    var H = this.canvasHeight;
-    var pad = { top: 24, right: 20, bottom: 40, left: 50 };
-    var pw = W - pad.left - pad.right;   // 绑图区宽
-    var ph = H - pad.top - pad.bottom;   // 绑图区高
-
-    // 1. 清空画布
-    ctx.clearRect(0, 0, W, H);
-
-    // 2. 背景网格
-    ctx.strokeStyle = 'rgba(0,0,0,0.06)';
-    ctx.lineWidth = 0.5;
-    for (var gy = 0; gy <= 4; gy++) {
-      var yy = pad.top + (ph / 4) * gy;
-      ctx.beginPath();
-      ctx.moveTo(pad.left, yy);
-      ctx.lineTo(W - pad.right, yy);
-      ctx.stroke();
-    }
-    for (var gx = 0; gx <= 6; gx++) {
-      var xx = pad.left + (pw / 6) * gx;
-      ctx.beginPath();
-      ctx.moveTo(xx, pad.top);
-      ctx.lineTo(xx, pad.top + ph);
-      ctx.stroke();
-    }
-
-    // 3. 收集所有品种数据，计算 y 范围
+  _collectTermData: function () {
     var allData = {};
     var yMin = Infinity, yMax = -Infinity;
     var keys = Object.keys(this.activeProducts);
@@ -447,8 +415,89 @@ Page({
       }
     }
 
-    // 扩展 y 范围
     if (yMin === Infinity) { yMin = -20; yMax = 20; }
+    return { allData: allData, yMin: yMin, yMax: yMax, keys: keys };
+  },
+
+  /**
+   * 更新 ref91/ref182 插值和 Δ 值（不依赖 canvas）
+   */
+  _updateRefValues: function (allData, keys) {
+    if (!keys) keys = Object.keys(this.activeProducts);
+
+    var refData = {};
+    for (var q = 0; q < keys.length; q++) {
+      var prd = keys[q];
+      var dd = allData[prd];
+      if (dd) {
+        refData[prd] = {
+          d91: spline.interpolateAt(dd.curve, 91),
+          d182: spline.interpolateAt(dd.curve, 182)
+        };
+      }
+    }
+
+    var products = this.data.products;
+    for (var r = 0; r < keys.length; r++) {
+      var pr = keys[r];
+      var rd = refData[pr];
+      if (rd) {
+        products[r].ref91 = calculator.formatPercent(rd.d91);
+        products[r].ref91Class = calculator.getBasisDirection(rd.d91);
+        products[r].ref182 = calculator.formatPercent(rd.d182);
+        products[r].ref182Class = calculator.getBasisDirection(rd.d182);
+        this.productsData[pr]._cur91 = rd.d91;
+        this.productsData[pr]._cur182 = rd.d182;
+      }
+    }
+    this.setData({ products: products });
+    this._updateDeltas();
+  },
+
+  /**
+   * 用原生 Canvas 2D 绑制期限结构曲线
+   */
+  _updateChart: function () {
+    // 始终计算 ref91/ref182，不依赖 canvas 状态
+    var term = this._collectTermData();
+    this._updateRefValues(term.allData, term.keys);
+
+    // canvas 绘图部分
+    var ctx = this.ctx;
+    if (!ctx) return;
+
+    var W = this.canvasWidth;
+    var H = this.canvasHeight;
+    var pad = { top: 24, right: 20, bottom: 40, left: 50 };
+    var pw = W - pad.left - pad.right;
+    var ph = H - pad.top - pad.bottom;
+    var keys = term.keys;
+    var allData = term.allData;
+    var yMin = term.yMin;
+    var yMax = term.yMax;
+
+    // 1. 清空画布
+    ctx.clearRect(0, 0, W, H);
+
+    // 2. 背景网格
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+    ctx.lineWidth = 0.5;
+    for (var gy = 0; gy <= 4; gy++) {
+      var yy = pad.top + (ph / 4) * gy;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, yy);
+      ctx.lineTo(W - pad.right, yy);
+      ctx.stroke();
+    }
+    for (var gx = 0; gx <= 6; gx++) {
+      var xx = pad.left + (pw / 6) * gx;
+      ctx.beginPath();
+      ctx.moveTo(xx, pad.top);
+      ctx.lineTo(xx, pad.top + ph);
+      ctx.stroke();
+    }
+
+    // 3. 扩展 y 范围
     var yPad = Math.max(Math.abs(yMax - yMin) * 0.15, 1);
     yMin -= yPad;
     yMax += yPad;
@@ -513,35 +562,6 @@ Page({
         ctx.fill();
       }
     }
-
-    // 6. 更新 ref91/ref182 插值
-    var refData = {};
-    for (var q = 0; q < keys.length; q++) {
-      var prd = keys[q];
-      var dd = allData[prd];
-      if (dd) {
-        refData[prd] = {
-          d91: spline.interpolateAt(dd.curve, 91),
-          d182: spline.interpolateAt(dd.curve, 182)
-        };
-      }
-    }
-
-    var products = this.data.products;
-    for (var r = 0; r < keys.length; r++) {
-      var pr = keys[r];
-      var rd = refData[pr];
-      if (rd) {
-        products[r].ref91 = calculator.formatPercent(rd.d91);
-        products[r].ref91Class = calculator.getBasisDirection(rd.d91);
-        products[r].ref182 = calculator.formatPercent(rd.d182);
-        products[r].ref182Class = calculator.getBasisDirection(rd.d182);
-        this.productsData[pr]._cur91 = rd.d91;
-        this.productsData[pr]._cur182 = rd.d182;
-      }
-    }
-    this.setData({ products: products });
-    this._updateDeltas();
   },
 
   /**

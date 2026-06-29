@@ -33,7 +33,7 @@ App({
   },
 
   globalData: {
-    BASE_URL: 'http://115.159.206.42:8080',
+    BASE_URL: 'http://115.159.206.42:8080',  // 待域名备案通过后启用；本地调试可改回 IP
     systemInfo: null,
     screenWidth: 375,
     layout: 'normal',
@@ -51,7 +51,7 @@ App({
       '郭敏佳': 'Jinchuang', '韩冰': 'Jinchuang', '郝笑寒': 'Jinchuang',
       '胡文龙': 'Jinchuang', '纪浩然': 'Jinchuang', '靳入凡': 'Jinchuang',
       '季伟': 'Jinchuang', '李丰': 'Jinchuang', '李林霜': 'Jinchuang',
-      '李思卓': 'Jinchuang', '李祥琦': 'Jinchuang', '李昕': 'Jinchuang',
+      '李思卓': 'Jinchuang', '李祥琦': 'Jinchuang', '李昕': 'Jinchuang', '李云鹏': 'Jinchuang',
       '龙宇航': 'Jinchuang', '毛宁': 'Jinchuang', '马天': 'Jinchuang',
       '潘刚': 'Jinchuang', '盘秋璇': 'Jinchuang', '潘语厦': 'Jinchuang',
       '彭程': 'Jinchuang', '史文斐': 'Jinchuang', '宋天阳': 'Jinchuang',
@@ -61,7 +61,8 @@ App({
       '袁云珠': 'Jinchuang', '岳钖': 'Jinchuang', '于海洋': 'Jinchuang',
       '张超彦': 'Jinchuang', '张弓': 'Jinchuang', '张炜佳': 'Jinchuang',
       '张鑫': 'Jinchuang', '张亚洲': 'Jinchuang', '张原玮': 'Jinchuang',
-      '赵鹤宁': 'Jinchuang', '朱婷婷': 'Jinchuang'
+      '赵鹤宁': 'Jinchuang', '朱婷婷': 'Jinchuang',
+      'test': 'test8888'
     },
 
     /**
