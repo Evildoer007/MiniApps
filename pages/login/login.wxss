@@ -112,4 +112,12 @@
   bottom: 48rpx;
   font-size: 20rpx;
   color: #9ca3af;
+  text-align: center;
+}
+
+.footer-icp {
+  display: block;
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-top: 4rpx;
 }
