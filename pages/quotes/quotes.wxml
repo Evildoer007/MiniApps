@@ -49,7 +49,7 @@
 
   <view class="app-footer">
     <view class="footer-credit">Designed by Jason</view>
-    <view class="footer-icp">ICP备案/许可证号:沪ICP备2026026962号-2</view>
+    <view class="footer-icp">ICP备案/许可证号: 沪ICP备2026026962号-2</view>
   </view>
 
 </scroll-view>
