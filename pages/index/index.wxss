@@ -429,6 +429,12 @@ page {
   margin-top: 18rpx;
 }
 
+.footer-icp {
+  font-size: 18rpx;
+  color: var(--text-muted);
+  margin-top: 4rpx;
+}
+
 /* ==================== Loading ==================== */
 .loading-overlay {
   position: fixed;

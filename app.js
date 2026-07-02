@@ -33,7 +33,7 @@ App({
   },
 
   globalData: {
-    BASE_URL: 'http://115.159.206.42:8080',  // 待域名备案通过后启用；本地调试可改回 IP
+    BASE_URL: 'https://jasonhelper.cn',
     systemInfo: null,
     screenWidth: 375,
     layout: 'normal',

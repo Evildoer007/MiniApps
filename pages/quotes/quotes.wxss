@@ -53,3 +53,8 @@ page {
 .report-empty { display: flex; align-items: center; justify-content: center; min-height: 400rpx; }
 .empty-text { font-size: 30rpx; color: #9ca3af; }
 .report-meta { margin-top: 24rpx; padding-top: 20rpx; border-top: 1px solid #f0f0f0; text-align: right; }
+
+/* Footer */
+.app-footer { padding: 10rpx 0 60rpx; text-align: center; }
+.footer-credit { font-size: 18rpx; color: #9ca3af; }
+.footer-icp { font-size: 18rpx; color: #9ca3af; margin-top: 4rpx; }
