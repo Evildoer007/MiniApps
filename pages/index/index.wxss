@@ -234,6 +234,12 @@ page {
   white-space: nowrap;
 }
 
+.spot-chg-inline {
+  font-weight: 700;
+  font-size: 24rpx;
+  margin-left: 4rpx;
+}
+
 .spot-price text {
   color: var(--text-primary);
   font-weight: 700;
@@ -321,6 +327,7 @@ page {
 /* 列宽基底（小屏） */
 .col-contract { width: 64rpx;  flex-shrink: 0; text-align: center; }
 .col-price    { width: 110rpx; flex-shrink: 0; text-align: center; }
+.col-chg      { flex: 0.8; min-width: 80rpx; text-align: center; font-weight: 600; }
 .col-basis    { flex: 1; min-width: 100rpx; text-align: center; font-weight: 600; }
 .col-ann      { flex: 1; min-width: 100rpx; text-align: center; font-weight: 600; }
 .col-days     { width: 80rpx;  flex-shrink: 0; text-align: center; font-size: 20rpx; color: var(--text-muted); }
@@ -497,6 +504,7 @@ page {
   .table-row { font-size: 25rpx; }
   .col-contract { width: 70rpx; }
   .col-price    { width: 120rpx; }
+  .col-chg      { min-width: 90rpx; }
   .col-basis    { min-width: 110rpx; }
   .col-ann      { min-width: 110rpx; }
   .col-days     { width: 90rpx; font-size: 22rpx; }
@@ -537,6 +545,7 @@ page {
   .table-row { font-size: 23rpx; }
   .col-contract { width: 56rpx; }
   .col-price    { width: 100rpx; }
+  .col-chg      { min-width: 70rpx; }
   .col-basis    { min-width: 90rpx; }
   .col-ann      { min-width: 90rpx; }
   .col-days     { width: 74rpx; font-size: 20rpx; }
@@ -568,6 +577,7 @@ page {
   .product-code { font-size: 42rpx; }
   .col-contract { width: 60rpx; }
   .col-price    { width: 106rpx; }
+  .col-chg      { min-width: 76rpx; }
   .col-basis    { min-width: 96rpx; }
   .col-ann      { min-width: 96rpx; }
   .col-days     { width: 78rpx; }

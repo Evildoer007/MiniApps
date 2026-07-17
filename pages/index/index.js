@@ -148,6 +148,8 @@ Page({
           daysToExpiry: ct.daysToExpiry,
           isFront: j === 0,
           futPrice: '--',
+          futChg: '--',
+          futChgClass: '',
           futBasis: '--',
           futBasisClass: '',
           futAnn: '--',
@@ -160,6 +162,8 @@ Page({
         display: info.display,
         spotLabel: info.spotLabel || '现货',
         spotPrice: '--',
+        spotChg: '--',
+        spotChgClass: '',
         contracts: contracts,
         ref91: '--', ref91Class: '',
         prev91: '--', prev91Class: '',
@@ -167,6 +171,9 @@ Page({
         ref182: '--', ref182Class: '',
         prev182: '--', prev182Class: '',
         chg182: '--', chg182Class: '',
+        ref365: '--', ref365Class: '',
+        prev365: '--', prev365Class: '',
+        chg365: '--', chg365Class: '',
         hasError: false
       });
     }
@@ -226,6 +233,19 @@ Page({
         products[i].hasError = false;
         products[i].spotPrice = calculator.formatPrice(spotData.latest, 2);
 
+        // 现货实时涨跌幅
+        if (spotData.changePercent != null) {
+          products[i].spotChg = calculator.formatPercent(spotData.changePercent);
+          products[i].spotChgClass = calculator.getBasisDirection(spotData.changePercent);
+        } else if (spotData.preSettlement != null && spotData.preSettlement !== 0) {
+          var spotChg = ((spotData.latest - spotData.preSettlement) / spotData.preSettlement) * 100;
+          products[i].spotChg = calculator.formatPercent(spotChg);
+          products[i].spotChgClass = calculator.getBasisDirection(spotChg);
+        } else {
+          products[i].spotChg = '--';
+          products[i].spotChgClass = '';
+        }
+
         // 更新四个合约的期货行
         for (var j = 0; j < info.contracts.length; j++) {
           var ct = info.contracts[j];
@@ -263,6 +283,8 @@ Page({
   _updateFuturesRowInArray: function (ctItem, fData, spotData, ct) {
     if (!fData || fData.latest == null) {
       ctItem.futPrice = '--';
+      ctItem.futChg = '--';
+      ctItem.futChgClass = '';
       ctItem.futBasis = '--';
       ctItem.futBasisClass = '';
       ctItem.futAnn = '--';
@@ -278,6 +300,16 @@ Page({
     ctItem.futBasisClass = dir;
     ctItem.futAnn = calculator.formatPercent(basis.annualizedBasis);
     ctItem.futAnnClass = dir;
+
+    // 涨跌幅
+    if (fData.preSettlement != null && fData.preSettlement !== 0) {
+      var chg = ((fData.latest - fData.preSettlement) / fData.preSettlement) * 100;
+      ctItem.futChg = calculator.formatPercent(chg);
+      ctItem.futChgClass = calculator.getBasisDirection(chg);
+    } else {
+      ctItem.futChg = '--';
+      ctItem.futChgClass = '';
+    }
 
     // 缓存年化值供图表和插值使用
     ct._annualizedBasis = basis.annualizedBasis;
@@ -339,18 +371,22 @@ Page({
       }
 
       if (prevPoints.length >= 2) {
-        var result = spline.buildTermStructure(prevPoints);
+        var result = spline.buildTermStructure(prevPoints, 0, 365);
         var d91 = spline.interpolateAt(result.curve, 91);
         var d182 = spline.interpolateAt(result.curve, 182);
+        var d365 = spline.interpolateAt(result.curve, 365);
 
         products[i].prev91 = calculator.formatPercent(d91);
         products[i].prev91Class = calculator.getBasisDirection(d91);
         products[i].prev182 = calculator.formatPercent(d182);
         products[i].prev182Class = calculator.getBasisDirection(d182);
+        products[i].prev365 = calculator.formatPercent(d365);
+        products[i].prev365Class = calculator.getBasisDirection(d365);
 
         // 保存昨值
         info._prev91 = d91;
         info._prev182 = d182;
+        info._prev365 = d365;
       }
     }
     this.setData({ products: products });
@@ -405,7 +441,7 @@ Page({
         }
       }
       if (pts.length >= 2) {
-        var result = spline.buildTermStructure(pts, 0, 182);
+        var result = spline.buildTermStructure(pts, 0, 365);
         allData[product] = result;
         for (var k = 0; k < result.curve.length; k++) {
           var v = result.curve[k].y;
@@ -432,7 +468,8 @@ Page({
       if (dd) {
         refData[prd] = {
           d91: spline.interpolateAt(dd.curve, 91),
-          d182: spline.interpolateAt(dd.curve, 182)
+          d182: spline.interpolateAt(dd.curve, 182),
+          d365: spline.interpolateAt(dd.curve, 365)
         };
       }
     }
@@ -446,8 +483,11 @@ Page({
         products[r].ref91Class = calculator.getBasisDirection(rd.d91);
         products[r].ref182 = calculator.formatPercent(rd.d182);
         products[r].ref182Class = calculator.getBasisDirection(rd.d182);
+        products[r].ref365 = calculator.formatPercent(rd.d365);
+        products[r].ref365Class = calculator.getBasisDirection(rd.d365);
         this.productsData[pr]._cur91 = rd.d91;
         this.productsData[pr]._cur182 = rd.d182;
+        this.productsData[pr]._cur365 = rd.d365;
       }
     }
     this.setData({ products: products });
@@ -503,7 +543,7 @@ Page({
     yMax += yPad;
 
     // 坐标转换函数
-    function xToPixel(days) { return pad.left + (days / 182) * pw; }
+    function xToPixel(days) { return pad.left + (days / 365) * pw; }
     function yToPixel(val) { return pad.top + ph - ((val - yMin) / (yMax - yMin)) * ph; }
 
     // 4. 坐标轴标签
@@ -511,7 +551,7 @@ Page({
     ctx.font = '10px sans-serif';
     ctx.textAlign = 'center';
     // x 轴
-    for (var tx = 0; tx <= 180; tx += 30) {
+    for (var tx = 0; tx <= 360; tx += 60) {
       ctx.fillText(tx + '天', xToPixel(tx), pad.top + ph + 16);
     }
     // x 轴名称
@@ -585,6 +625,13 @@ Page({
       if (products[i].chg182 !== calculator.formatPercent(d182)) {
         products[i].chg182 = calculator.formatPercent(d182);
         products[i].chg182Class = calculator.getBasisDirection(d182);
+        changed = true;
+      }
+
+      var d365 = this._calcDelta(info._cur365, info._prev365);
+      if (products[i].chg365 !== calculator.formatPercent(d365)) {
+        products[i].chg365 = calculator.formatPercent(d365);
+        products[i].chg365Class = calculator.getBasisDirection(d365);
         changed = true;
       }
     }

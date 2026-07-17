@@ -70,6 +70,27 @@ function buildTermStructure(contracts, xMin, xMax, density) {
 
   if (spots.length < 2) return { curve: spots, spots: spots };
 
+  // 若 xMax 超出最大数据点 x，追加外推点
+  var maxSpotX = spots[spots.length - 1].x;
+  if (xMax != null && xMax > maxSpotX) {
+    var n = spots.length;
+    var dx = spots[n - 1].x - spots[n - 2].x;
+    var slope = dx !== 0 ? (spots[n - 1].y - spots[n - 2].y) / dx : 0;
+    var extrapY = spots[n - 1].y + slope * (xMax - spots[n - 1].x);
+    // 追加外推点（不修改原 spots，仅用于曲线生成）
+    var extSpots = spots.concat([{ x: xMax, y: +extrapY.toFixed(4) }]);
+    var curve = catmullRom(extSpots, density);
+    // 裁剪到 [xMin, xMax]
+    if (xMin != null || xMax != null) {
+      curve = curve.filter(function (p) {
+        if (xMin != null && p.x < xMin) return false;
+        if (xMax != null && p.x > xMax) return false;
+        return true;
+      });
+    }
+    return { curve: curve, spots: spots };
+  }
+
   var curve = catmullRom(spots, density);
 
   // 裁剪到 [xMin, xMax]
