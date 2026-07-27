@@ -28,7 +28,11 @@ Page({
     toastVisible: false,
     toastMessage: '',
     toastType: '',
-    loginUser: ''
+    loginUser: '',
+    // 历史基差弹出层
+    basisPopupVisible: false,
+    basisPopupContract: '',
+    basisPopupRange: ''
   },
 
   activeProducts: {},
@@ -751,5 +755,236 @@ Page({
       this._stopAutoRefresh();
       wx.redirectTo({ url: '/pages/quotes/quotes' });
     }
+  },
+
+  // ==================== 历史基差弹出层 ====================
+
+  onContractTap: function (e) {
+    var contract = e.currentTarget.dataset.contract;
+    if (!contract) return;
+
+    // 已经在展示同一个合约 → 关闭
+    if (this.data.basisPopupVisible && this.data.basisPopupContract === contract) {
+      this._closeBasisPopup();
+      return;
+    }
+
+    // 其他合约 → 展示
+    this._stopAutoRefresh();
+    this.setData({
+      basisPopupVisible: true,
+      basisPopupContract: contract,
+      basisPopupRange: ''
+    });
+
+    var that = this;
+    wx.request({
+      url: getApp().globalData.BASE_URL + '/api/historical-basis',
+      data: { contract: contract },
+      method: 'GET',
+      timeout: 10000,
+      success: function (res) {
+        if (res.statusCode === 200 && res.data && res.data.ok) {
+          that._basisData = res.data.data;
+          that.setData({
+            basisPopupRange: res.data.data[0].date + ' ~ ' + res.data.data[res.data.data.length - 1].date
+          });
+          // 等待下一帧 canvas 就绪后绘绑
+          setTimeout(function () { that._drawBasisChart(); }, 300);
+        } else {
+          wx.showToast({ title: '数据获取失败', icon: 'error' });
+        }
+      },
+      fail: function () {
+        wx.showToast({ title: '网络请求失败', icon: 'error' });
+      }
+    });
+  },
+
+  onBasisPopupClose: function () {
+    this._closeBasisPopup();
+    // 恢复自动刷新
+    if (this.data.autoRefresh && !autoRefreshTimer) {
+      this._startAutoRefresh();
+    }
+  },
+
+  stopPropagation: function () {
+    // 阻止冒泡，点击卡片内部不关闭
+  },
+
+  _closeBasisPopup: function () {
+    this.setData({ basisPopupVisible: false, basisPopupContract: '', basisPopupRange: '' });
+    this._basisData = null;
+    this._basisCtx = null;
+  },
+
+  _drawBasisChart: function () {
+    var data = this._basisData;
+    if (!data || data.length === 0) return;
+
+    var that = this;
+    var query = wx.createSelectorQuery();
+    query.select('#basisChart')
+      .fields({ node: true, size: true })
+      .exec(function (res) {
+        if (!res || !res[0] || !res[0].node) {
+          // 重试一次
+          setTimeout(function () { that._drawBasisChart(); }, 200);
+          return;
+        }
+
+        var canvas = res[0].node;
+        var ctx = canvas.getContext('2d');
+        var W = res[0].width;
+        var H = res[0].height;
+        var dpr = wx.getSystemInfoSync().pixelRatio;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+
+        that._basisCtx = ctx;
+        that._basisCanvasW = W;
+        that._basisCanvasH = H;
+
+        var pad = { top: 20, right: 24, bottom: 70, left: 60 };
+        var pw = W - pad.left - pad.right;
+        var ph = H - pad.top - pad.bottom;
+
+        // 找出 y 范围
+        var values = [];
+        for (var i = 0; i < data.length; i++) {
+          values.push(data[i].annualized_basis);
+        }
+        var yMin = Math.min.apply(null, values);
+        var yMax = Math.max.apply(null, values);
+        var yPad = Math.max(Math.abs(yMax - yMin) * 0.15, 0.5);
+        yMin -= yPad;
+        yMax += yPad;
+
+        // 确保 y=0 线可见——但只在零线距离数据范围较近时才拉大范围
+        var zeroDist = Math.min(Math.abs(yMin), Math.abs(yMax));
+        if (zeroDist < Math.abs(yMax - yMin) * 0.5) {
+          // 零线距离数据较近，正常展示
+          if (yMin > 0) yMin = -0.5;
+          if (yMax < 0) yMax = 0.5;
+        }
+
+        ctx.clearRect(0, 0, W, H);
+
+        // 网格
+        ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+        ctx.lineWidth = 0.5;
+        for (var gy = 0; gy <= 5; gy++) {
+          var yy = pad.top + (ph / 5) * gy;
+          ctx.beginPath();
+          ctx.moveTo(pad.left, yy);
+          ctx.lineTo(W - pad.right, yy);
+          ctx.stroke();
+        }
+
+        // y=0 基准线加粗
+        var y0 = pad.top + ph - ((0 - yMin) / (yMax - yMin)) * ph;
+        if (y0 >= pad.top && y0 <= pad.top + ph) {
+          ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y0);
+          ctx.lineTo(W - pad.right, y0);
+          ctx.stroke();
+        }
+
+        // 坐标轴标签
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        for (var ty = 0; ty <= 5; ty++) {
+          var yVal = yMax - (yMax - yMin) * (ty / 5);
+          ctx.fillText(yVal.toFixed(1) + '%', pad.left - 6, pad.top + (ph / 5) * ty + 3);
+        }
+
+        // x 轴日期标签 —— 纵向旋转，取 8-10 个均匀采样点避免重叠
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+
+        var totalDays = data.length;
+        var targetTicks = Math.min(totalDays, 10);
+        var tickStep = Math.max(1, Math.floor((totalDays - 1) / (targetTicks - 1)));
+
+        // 如果数据 ≤ 30 天，每 5 天标一次；≤ 90 天，每 10 天；否则均匀 10 个
+        if (totalDays <= 30) {
+          tickStep = Math.max(1, Math.floor(totalDays / 6));
+        } else if (totalDays <= 90) {
+          tickStep = Math.max(1, Math.floor(totalDays / 9));
+        }
+
+        for (var i = 0; i < totalDays; i++) {
+          var isLast = i === totalDays - 1;
+          if (i % tickStep !== 0 && !isLast) continue;
+          // 跳过紧挨最后一个标簽的点
+          if (isLast && (totalDays - 2) % tickStep === 0) continue;
+
+          var dx = pad.left + (i / (totalDays - 1)) * pw;
+          var labelText = data[i].date.slice(5); // "04-20"
+
+          ctx.save();
+          ctx.translate(dx, pad.top + ph + 32);
+          ctx.rotate(-Math.PI / 3); // 向左侧斜 60 度
+          ctx.fillText(labelText, 0, 0);
+          ctx.restore();
+        }
+
+        // 绘图
+        var xToPixel = function (i) { return pad.left + (i / (data.length - 1)) * pw; };
+        var yToPixel = function (v) { return pad.top + ph - ((v - yMin) / (yMax - yMin)) * ph; };
+
+        // 填充区域
+        ctx.beginPath();
+        ctx.moveTo(xToPixel(0), y0);
+        for (var i = 0; i < data.length; i++) {
+          ctx.lineTo(xToPixel(i), yToPixel(data[i].annualized_basis));
+        }
+        ctx.lineTo(xToPixel(data.length - 1), y0);
+        ctx.closePath();
+
+        var gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + ph);
+        gradient.addColorStop(0, 'rgba(224,49,75,0.18)');
+        gradient.addColorStop(1, 'rgba(5,150,105,0.18)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // 折线
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (var i = 0; i < data.length; i++) {
+          var sx = xToPixel(i);
+          var sy = yToPixel(data[i].annualized_basis);
+          if (i === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+        ctx.stroke();
+
+        // 最新值标注
+        var last = data[data.length - 1];
+        var lx = xToPixel(data.length - 1);
+        var ly = yToPixel(last.annualized_basis);
+        ctx.fillStyle = '#2563eb';
+        ctx.beginPath();
+        ctx.arc(lx, ly, 4, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // 数值标注
+        ctx.fillStyle = '#1a1d26';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'left';
+        var label = last.annualized_basis.toFixed(2) + '%';
+        var lw = ctx.measureText(label).width;
+        var labelX = lx + 10;
+        if (labelX + lw > W - pad.right) labelX = lx - lw - 10;
+        ctx.fillText(label, labelX, ly - 10);
+      });
   }
 });

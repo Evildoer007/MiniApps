@@ -1,5 +1,5 @@
 <!-- 股指期货升贴水 — 主页面 -->
-<view class="app-container">
+<scroll-view class="app-container" scroll-y="{{!basisPopupVisible}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="height: 100vh;">
 
   <!-- Header -->
   <view class="app-header">
@@ -115,7 +115,10 @@
           <text class="col-days">期限</text>
         </view>
         <view class="table-row {{ct.isFront ? 'is-front-month' : ''}}"
-              wx:for="{{item.contracts}}" wx:for-item="ct" wx:key="displayCode">
+              wx:for="{{item.contracts}}" wx:for-item="ct" wx:key="displayCode"
+              data-contract="{{ct.displayCode}}"
+              data-days="{{ct.daysToExpiry}}"
+              bindtap="onContractTap">
           <text class="col-contract">{{ct.monthLabel}}</text>
           <text class="col-price">{{ct.futPrice}}</text>
           <text class="col-chg {{ct.futChgClass}}">{{ct.futChg}}</text>
@@ -156,8 +159,7 @@
     <view class="footer-credit">Designed by Jason</view>
     <view class="footer-icp">ICP备案/许可证号: 沪ICP备2026026962号-2</view>
   </view>
-
-</view>
+</scroll-view>
 
 <!-- Loading 遮罩 -->
 <view class="loading-overlay" wx:if="{{loadingVisible}}">
@@ -171,3 +173,20 @@
 
 <!-- 底部导航栏 -->
 <bottom-bar active="basis" bind:change="onBarChange"></bottom-bar>
+
+<!-- 历史基差图表弹出层 -->
+<view class="basis-popup-overlay" wx:if="{{basisPopupVisible}}" catchtap="onBasisPopupClose" catchtouchmove="stopPropagation">
+  <view class="basis-popup-card" catchtap="stopPropagation" catchtouchmove="stopPropagation">
+    <view class="basis-popup-header">
+      <text class="basis-popup-title">{{basisPopupContract}} 年化基差走势</text>
+      <view class="basis-popup-close" bindtap="onBasisPopupClose">✕</view>
+    </view>
+    <view class="basis-popup-chart-wrap">
+      <canvas type="2d" id="basisChart" class="basis-popup-chart"></canvas>
+    </view>
+    <view class="basis-popup-legend">
+      <text class="basis-popup-hint">点击空白处关闭</text>
+      <text class="basis-popup-range" wx:if="{{basisPopupRange}}">{{basisPopupRange}}</text>
+    </view>
+  </view>
+</view>
