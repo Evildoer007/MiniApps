@@ -52,6 +52,7 @@ App({
       '胡文龙': 'Jinchuang', '纪浩然': 'Jinchuang', '靳入凡': 'Jinchuang',
       '季伟': 'Jinchuang', '李丰': 'Jinchuang', '李林霜': 'Jinchuang',
       '李思卓': 'Jinchuang', '李祥琦': 'Jinchuang', '李昕': 'Jinchuang', '李云鹏': 'Jinchuang',
+      '林泳': 'Jinchuang',
       '刘钦豪': 'Jinchuang', '龙宇航': 'Jinchuang', '毛宁': 'Jinchuang', '马天': 'Jinchuang',
       '潘刚': 'Jinchuang', '盘秋璇': 'Jinchuang', '潘语厦': 'Jinchuang',
       '彭程': 'Jinchuang', '史文斐': 'Jinchuang', '宋天阳': 'Jinchuang',
