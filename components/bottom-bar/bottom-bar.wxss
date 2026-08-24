@@ -38,3 +38,20 @@
 .bar-item.active .bar-label {
   font-weight: 700;
 }
+
+/* 晨报更新气泡提示 */
+.morning-bubble {
+  position: fixed;
+  bottom: 130rpx;
+  width: 220rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: #ff4d4f;
+  border-radius: 20rpx;
+  z-index: 1000;
+}
