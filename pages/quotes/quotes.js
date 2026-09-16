@@ -100,6 +100,8 @@ Page({
   onBarChange: function (e) {
     if (e.detail.tab === 'basis') {
       wx.redirectTo({ url: '/pages/index/index' });
+    } else if (e.detail.tab === 'resource') {
+      wx.redirectTo({ url: '/pages/resources/resources' });
     }
   },
 

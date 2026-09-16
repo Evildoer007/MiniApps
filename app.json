@@ -3,6 +3,7 @@
     "pages/login/login",
     "pages/index/index",
     "pages/quotes/quotes",
+    "pages/resources/resources",
     "pages/change-password/change-password",
     "pages/admin-password/admin-password"
   ],

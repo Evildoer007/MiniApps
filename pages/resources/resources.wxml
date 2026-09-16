@@ -1,0 +1,89 @@
+<!-- 资源页面 -->
+<scroll-view scroll-y class="page-scroll">
+
+  <!-- Header -->
+  <view class="app-header">
+    <view class="header-top">
+      <view class="logo-row">
+        <button class="btn-logout-top" bindtap="onLogout">注销登录</button>
+        <button class="btn-admin-top" bindtap="onAdminPwd" wx:if="{{loginUser === 'Jason'}}">修改密码</button>
+      </view>
+      <view class="header-right">
+        <text>内部使用请勿外传</text>
+        <text class="login-user-tag">当前用户：{{loginUser}}</text>
+      </view>
+    </view>
+    <view class="app-title">资源</view>
+  </view>
+
+  <!-- 可出借券池 -->
+  <view class="section-title">
+    <view class="section-title-bar"></view>
+    <text>可出借券池</text>
+  </view>
+
+  <!-- 编辑视图（授权编辑人员） -->
+  <view class="pool-editor" wx:if="{{isEditor}}">
+    <view class="editor-toolbar">
+      <button class="btn-add" bindtap="addRow">＋ 新增一行</button>
+      <button class="btn-save" bindtap="savePool" loading="{{saving}}" disabled="{{saving}}">保存</button>
+    </view>
+
+    <view class="pool-table">
+      <view class="table-hd">
+        <text class="col-code">标的代码</text>
+        <text class="col-name">标的名称</text>
+        <text class="col-qty">可借数量</text>
+        <text class="col-op">操作</text>
+      </view>
+      <view class="table-row" wx:for="{{rows}}" wx:key="id">
+        <view class="col-code">
+          <input class="cell-input" value="{{item.code}}" data-index="{{index}}" data-field="code" bindinput="onInput" placeholder="如 513130.SH" />
+        </view>
+        <view class="col-name">
+          <input class="cell-input" value="{{item.name}}" data-index="{{index}}" data-field="name" bindinput="onInput" placeholder="名称" />
+        </view>
+        <view class="col-qty">
+          <view class="qty-wrap">
+            <input class="cell-input" type="digit" value="{{item.quantity}}" data-index="{{index}}" data-field="quantity" bindinput="onInput" placeholder="数量" />
+            <text class="qty-unit">股</text>
+          </view>
+        </view>
+        <view class="col-op">
+          <view class="btn-del" data-index="{{index}}" bindtap="removeRow">✕</view>
+        </view>
+      </view>
+    </view>
+    <view class="pool-empty" wx:if="{{rows.length === 0}}">暂无券池数据，点击「新增一行」开始录入</view>
+    <view class="pool-meta" wx:if="{{lastUpdate}}"><text>更新于 {{lastUpdate}}</text></view>
+  </view>
+
+  <!-- 只读视图（普通用户） -->
+  <view class="pool-reader" wx:else>
+    <view class="pool-table">
+      <view class="table-hd">
+        <text class="col-code">标的代码</text>
+        <text class="col-name">标的名称</text>
+        <text class="col-qty">可借数量</text>
+      </view>
+      <view class="table-row" wx:for="{{rows}}" wx:key="id">
+        <text class="col-code">{{item.code}}</text>
+        <text class="col-name">{{item.name}}</text>
+        <text class="col-qty">{{item.quantity}}股</text>
+      </view>
+    </view>
+    <view class="pool-empty" wx:if="{{rows.length === 0}}">暂无券池数据</view>
+    <view class="pool-meta" wx:if="{{lastUpdate}}"><text>更新于 {{lastUpdate}}</text></view>
+  </view>
+
+  <view class="bottom-gap"></view>
+
+  <view class="app-footer">
+    <view class="footer-credit">Designed by Jason</view>
+    <view class="footer-icp">ICP备案/许可证号: 沪ICP备2026026962号-2</view>
+  </view>
+
+</scroll-view>
+
+<!-- 底部导航栏 -->
+<bottom-bar active="resource" bind:change="onBarChange"></bottom-bar>
