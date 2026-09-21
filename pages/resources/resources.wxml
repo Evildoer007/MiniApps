@@ -11,12 +11,36 @@
       <view class="header-right">
         <text>内部使用请勿外传</text>
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
+        <text class="login-user-tag">{{department}}</text>
       </view>
     </view>
     <view class="app-title">资源</view>
   </view>
 
-  <!-- 可出借券池 -->
+  <!-- 集群投研报告 -->
+  <view class="section-title">
+    <view class="section-title-bar"></view>
+    <text>集群投研报告</text>
+  </view>
+
+  <view class="report-toolbar" wx:if="{{isAdmin}}">
+    <button class="btn-upload" bindtap="onUploadReport" loading="{{uploading}}" disabled="{{uploading}}">＋ 上传报告（html / pdf）</button>
+  </view>
+
+  <view class="report-list" wx:if="{{reports.length > 0}}">
+    <view class="report-item" wx:for="{{reports}}" wx:key="id" data-index="{{index}}" bindtap="onOpenReport">
+      <view class="report-info">
+        <text class="report-name">{{item.name}}</text>
+        <text class="report-meta">{{item.uploadedBy}} · {{item.uploadedAtText}}</text>
+      </view>
+      <view class="report-badge">{{item.ext}}</view>
+      <view class="report-del" wx:if="{{isAdmin}}" data-index="{{index}}" catchtap="onDeleteReport">✕</view>
+    </view>
+  </view>
+  <view class="pool-empty" wx:if="{{reports.length === 0}}">暂无报告</view>
+
+  <!-- 可出借券池（已隐藏，恢复时把下方 block 的 wx:if 改回 true） -->
+  <block wx:if="{{false}}">
   <view class="section-title">
     <view class="section-title-bar"></view>
     <text>可出借券池</text>
@@ -75,6 +99,7 @@
     <view class="pool-empty" wx:if="{{rows.length === 0}}">暂无券池数据</view>
     <view class="pool-meta" wx:if="{{lastUpdate}}"><text>更新于 {{lastUpdate}}</text></view>
   </view>
+  </block>
 
   <view class="bottom-gap"></view>
 

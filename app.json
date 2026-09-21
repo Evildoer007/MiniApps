@@ -5,7 +5,8 @@
     "pages/quotes/quotes",
     "pages/resources/resources",
     "pages/change-password/change-password",
-    "pages/admin-password/admin-password"
+    "pages/admin-password/admin-password",
+    "pages/report-viewer/report-viewer"
   ],
   "window": {
     "navigationBarTitleText": "Jason金点子",

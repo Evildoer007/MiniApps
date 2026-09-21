@@ -31,6 +31,21 @@ page {
 .section-title-bar { width: 8rpx; height: 30rpx; background: #2563eb; border-radius: 4rpx; }
 .section-title text { font-size: 30rpx; font-weight: 700; }
 
+/* 集群投研报告 */
+.report-toolbar { margin-bottom: 16rpx; }
+.btn-upload { background: linear-gradient(135deg,#2563eb,#1d4ed8); color: #fff; border: none; border-radius: 12rpx; padding: 14rpx 32rpx; font-size: 26rpx; font-weight: 600; }
+.btn-upload[disabled] { opacity: .6; }
+
+.report-list { background: #fff; border-radius: 18rpx; padding: 8rpx 16rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06); }
+.report-item { display: flex; align-items: center; gap: 16rpx; padding: 22rpx 4rpx; border-bottom: 1px solid #f0f0f0; }
+.report-item:last-child { border-bottom: none; }
+.report-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6rpx; }
+.report-name { font-size: 28rpx; color: #1a1d26; font-weight: 600; word-break: break-all; }
+.report-meta { font-size: 22rpx; color: #9ca3af; }
+.report-badge { flex-shrink: 0; font-size: 20rpx; color: #2563eb; background: rgba(37,99,235,.08); border-radius: 8rpx; padding: 4rpx 14rpx; font-weight: 600; text-transform: uppercase; }
+.report-del { flex-shrink: 0; width: 52rpx; height: 52rpx; line-height: 52rpx; text-align: center; color: #e0314b; font-size: 30rpx; font-weight: 700; background: rgba(224,49,75,.08); border-radius: 50%; }
+
+
 /* 编辑工具栏 */
 .editor-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
 .btn-add { background: #fff; color: #2563eb; border: 1px solid rgba(37,99,235,.4); border-radius: 12rpx; padding: 12rpx 28rpx; font-size: 26rpx; font-weight: 600; }

@@ -11,6 +11,7 @@
       <view class="header-right">
         <text>内部使用请勿外传</text>
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
+        <text class="login-user-tag">{{department}}</text>
       </view>
     </view>
     <view class="app-title">期货升贴水</view>

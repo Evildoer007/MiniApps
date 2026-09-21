@@ -29,6 +29,7 @@ Page({
     toastMessage: '',
     toastType: '',
     loginUser: '',
+    department: '',
     // 历史基差弹出层
     basisPopupVisible: false,
     basisPopupContract: '',
@@ -65,8 +66,12 @@ Page({
       return;
     }
 
-    // 同步当前用户名
-    this.setData({ loginUser: app.globalData.loginUser || '' });
+    // 同步当前用户名与所属部门
+    var user = app.globalData.loginUser || '';
+    this.setData({
+      loginUser: user,
+      department: app.globalData.getUserDepartment(user)
+    });
 
     // 页面显示时恢复自动刷新（类似 visibilitychange）
     if (this.data.autoRefresh && !autoRefreshTimer) {

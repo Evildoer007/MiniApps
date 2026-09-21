@@ -3,6 +3,7 @@ var app = getApp();
 Page({
   data: {
     loginUser: '',
+    department: '',
     isAdmin: false,
     reportContent: '',
     lastUpdate: '',
@@ -17,6 +18,7 @@ Page({
     var user = app.globalData.loginUser || '';
     this.setData({
       loginUser: user,
+      department: app.globalData.getUserDepartment(user),
       isAdmin: user === 'Jason'
     });
     this._loadReport();
