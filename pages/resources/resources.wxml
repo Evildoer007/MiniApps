@@ -24,7 +24,7 @@
   </view>
 
   <view class="report-toolbar" wx:if="{{isAdmin}}">
-    <button class="btn-upload" bindtap="onUploadReport" loading="{{uploading}}" disabled="{{uploading}}">＋ 上传报告（html / pdf）</button>
+    <button class="btn-upload" bindtap="onUploadReport" loading="{{uploading}}" disabled="{{uploading}}">＋ 上传报告</button>
   </view>
 
   <view class="report-list" wx:if="{{reports.length > 0}}">
