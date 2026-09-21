@@ -31,7 +31,6 @@
     <view class="report-item" wx:for="{{reports}}" wx:key="id" data-index="{{index}}" bindtap="onOpenReport">
       <view class="report-info">
         <text class="report-name">{{item.name}}</text>
-        <text class="report-meta">{{item.uploadedBy}} · {{item.uploadedAtText}}</text>
       </view>
       <view class="report-badge">{{item.ext}}</view>
       <view class="report-del" wx:if="{{isAdmin}}" data-index="{{index}}" catchtap="onDeleteReport">✕</view>
