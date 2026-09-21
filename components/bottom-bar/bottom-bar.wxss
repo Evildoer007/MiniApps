@@ -42,7 +42,7 @@
 /* 晨报更新气泡提示 */
 .morning-bubble {
   position: fixed;
-  bottom: 130rpx;
+  bottom: calc(130rpx + env(safe-area-inset-bottom));
   width: 220rpx;
   height: 40rpx;
   line-height: 40rpx;

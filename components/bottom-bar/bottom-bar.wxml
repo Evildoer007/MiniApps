@@ -1,16 +1,18 @@
 <!-- 底部导航栏 — 使用 cover-view 覆盖原生 Canvas -->
-<cover-view class="bottom-bar">
+<block>
   <cover-view class="morning-bubble" wx:if="{{showBubble}}" style="left: {{bubbleLeft}}px;">晨报更新啦～</cover-view>
-  <cover-view class="bar-item {{active === 'resource' ? 'active' : ''}}" data-tab="resource" bindtap="onTap">
-    <cover-view class="bar-icon">📁</cover-view>
-    <cover-view class="bar-label">资源</cover-view>
+  <cover-view class="bottom-bar">
+    <cover-view class="bar-item {{active === 'resource' ? 'active' : ''}}" data-tab="resource" bindtap="onTap">
+      <cover-view class="bar-icon">📁</cover-view>
+      <cover-view class="bar-label">资源</cover-view>
+    </cover-view>
+    <cover-view class="bar-item {{active === 'basis' ? 'active' : ''}}" data-tab="basis" bindtap="onTap">
+      <cover-view class="bar-icon">📈</cover-view>
+      <cover-view class="bar-label">升贴水</cover-view>
+    </cover-view>
+    <cover-view class="bar-item {{active === 'quotes' ? 'active' : ''}}" data-tab="quotes" bindtap="onTap">
+      <cover-view class="bar-icon">📰</cover-view>
+      <cover-view class="bar-label">晨报</cover-view>
+    </cover-view>
   </cover-view>
-  <cover-view class="bar-item {{active === 'basis' ? 'active' : ''}}" data-tab="basis" bindtap="onTap">
-    <cover-view class="bar-icon">📈</cover-view>
-    <cover-view class="bar-label">升贴水</cover-view>
-  </cover-view>
-  <cover-view class="bar-item {{active === 'quotes' ? 'active' : ''}}" data-tab="quotes" bindtap="onTap">
-    <cover-view class="bar-icon">📰</cover-view>
-    <cover-view class="bar-label">晨报</cover-view>
-  </cover-view>
-</cover-view>
+</block>
