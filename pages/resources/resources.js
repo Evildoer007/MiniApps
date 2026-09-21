@@ -172,7 +172,7 @@ Page({
         that.setData({ uploading: true });
         wx.showLoading({ title: '上传中...', mask: true });
         wx.uploadFile({
-          url: app.globalData.BASE_URL + '/api/cluster-reports/upload?user=' + encodeURIComponent(that.data.loginUser),
+          url: app.globalData.BASE_URL + '/api/cluster-reports/upload?user=' + encodeURIComponent(that.data.loginUser) + '&name=' + encodeURIComponent(name),
           filePath: file.path,
           name: 'file',
           timeout: 120000,

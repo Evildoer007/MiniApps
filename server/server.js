@@ -427,6 +427,7 @@ http.createServer((req, res) => {
   if (req.url.startsWith('/api/cluster-reports/upload') && req.method === 'POST') {
     const urlObj = new URL(req.url, `http://localhost:${PORT}`);
     const user = urlObj.searchParams.get('user') || '';
+    const origName = (urlObj.searchParams.get('name') || '').trim();
     if (CLUSTER_REPORT_ADMINS.indexOf(user) === -1) {
       res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
       res.end(JSON.stringify({ ok: false, error: '无权限：仅管理员可上传' }));
@@ -449,7 +450,8 @@ http.createServer((req, res) => {
         res.end(JSON.stringify({ ok: false, error: '未收到文件内容' }));
         return;
       }
-      const ext = path.extname(parsed.filename).toLowerCase();
+      const displayName = origName || parsed.filename;
+      const ext = path.extname(displayName).toLowerCase();
       if (CLUSTER_REPORT_EXT.indexOf(ext) === -1) {
         res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ ok: false, error: '仅支持 html / pdf 文件' }));
@@ -466,7 +468,7 @@ http.createServer((req, res) => {
         readClusterReports().then(items => {
           const item = {
             id: id,
-            name: parsed.filename,
+            name: displayName,
             ext: ext.slice(1),
             size: parsed.content.length,
             uploadedAt: new Date().toISOString(),
