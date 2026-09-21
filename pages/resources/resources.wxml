@@ -11,7 +11,6 @@
       <view class="header-right">
         <text>内部使用请勿外传</text>
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
-        <text class="login-user-tag">{{department}}</text>
       </view>
     </view>
     <view class="app-title">资源</view>
@@ -20,7 +19,7 @@
   <!-- 集群投研报告 -->
   <view class="section-title">
     <view class="section-title-bar"></view>
-    <text>集群投研报告</text>
+    <text>资源</text>
   </view>
 
   <view class="report-toolbar" wx:if="{{isAdmin}}">
