@@ -1,0 +1,9 @@
+node_modules/
+*.log
+.DS_Store
+
+# 运行时数据（有状态，勿提交；部署时不要覆盖线上已有数据）
+morning_report.json
+lend_pool.json
+cluster_reports.json
+cluster_reports/

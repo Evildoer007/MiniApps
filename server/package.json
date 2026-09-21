@@ -1,0 +1,13 @@
+{
+  "name": "qihuo-shengtieshui-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "期货升贴水微信小程序后端：新浪行情代理 + 晨报 + 券池 + 集群投研报告",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
