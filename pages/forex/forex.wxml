@@ -1,4 +1,4 @@
-<!-- 外汇页面 -->
+<!-- 矩阵页面 -->
 <scroll-view scroll-y class="page-scroll">
 
   <!-- Header -->
@@ -13,7 +13,7 @@
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
       </view>
     </view>
-    <view class="app-title">外汇</view>
+    <view class="app-title">矩阵</view>
     <view class="update-time">
       <text>{{updateTimeText}}</text>
     </view>
@@ -30,7 +30,7 @@
 
   <!-- 汇率矩阵 -->
   <view class="matrix-wrap">
-    <view class="matrix-hint">每一格 = 1 单位「横币种」兑换的「竖币种」数量，点击查看详情</view>
+    <view class="matrix-hint">每一格 = 1 单位「横类别」兑换的「竖类别」数量，点击查看详情</view>
     <scroll-view scroll-x class="matrix-scroll">
       <view class="matrix">
         <!-- 表头行 -->
@@ -60,22 +60,22 @@
 
   <!-- 汇率计算器 -->
   <view class="calc-card">
-    <view class="calc-title">汇率计算器</view>
+    <view class="calc-title">计算器</view>
 
     <view class="calc-row">
-      <text class="calc-label">原始币种</text>
+      <text class="calc-label">原始类别</text>
       <picker mode="selector" range="{{currencyList}}" value="{{sourceIndex}}" bindchange="onSourceChange" class="calc-picker">
         <view class="calc-picker-value">{{currencyList[sourceIndex]}} ▾</view>
       </picker>
     </view>
 
     <view class="calc-row">
-      <text class="calc-label">原始金额</text>
-      <input class="calc-input" type="digit" value="{{sourceAmount}}" placeholder="请输入金额" bindinput="onAmountInput" />
+      <text class="calc-label">原始总量</text>
+      <input class="calc-input" type="digit" value="{{sourceAmount}}" placeholder="请输入总量" bindinput="onAmountInput" />
     </view>
 
     <view class="calc-row">
-      <text class="calc-label">目标币种</text>
+      <text class="calc-label">目标类别</text>
       <picker mode="selector" range="{{currencyList}}" value="{{targetIndex}}" bindchange="onTargetChange" class="calc-picker">
         <view class="calc-picker-value">{{currencyList[targetIndex]}} ▾</view>
       </picker>
@@ -84,7 +84,7 @@
     <view class="calc-divider"></view>
 
     <view class="calc-row">
-      <text class="calc-label">目标金额</text>
+      <text class="calc-label">目标总量</text>
       <text class="calc-result">{{targetAmount || '—'}}</text>
     </view>
     <view class="calc-rate">{{rateText}}</view>

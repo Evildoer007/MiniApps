@@ -1,4 +1,4 @@
-<!-- 股指期货升贴水 — 主页面 -->
+<!-- 股指升贴水 — 主页面 -->
 <scroll-view class="app-container" scroll-y="{{!basisPopupVisible}}" enhanced="{{true}}" show-scrollbar="{{false}}" style="height: 100vh;">
 
   <!-- Header -->
@@ -13,7 +13,7 @@
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
       </view>
     </view>
-    <view class="app-title">期货升贴水</view>
+    <view class="app-title">升贴水</view>
     <view class="update-time">
       <view class="update-dot {{updateDotClass}}"></view>
       <text>{{updateTimeText}}</text>
@@ -32,14 +32,14 @@
   <!-- 标签栏 -->
   <view class="tab-bar">
     <view class="tab-item {{currentTab === 'index' ? 'active' : ''}}" data-tab="index" bindtap="onTabChange">
-      <text>股指期货</text>
+      <text>股指</text>
     </view>
     <view class="tab-item {{currentTab === 'commodity' ? 'active' : ''}}" data-tab="commodity" bindtap="onTabChange">
-      <text>商品期货</text>
+      <text>商品</text>
     </view>
   </view>
 
-  <!-- 商品期货品种选择器 -->
+  <!-- 商品品种选择器 -->
   <view class="commodity-selector" wx:if="{{currentTab === 'commodity'}}">
     <picker mode="selector" range="{{commodityList}}" value="{{commodityIndex}}" bindchange="onCommodityChange">
       <view class="picker-display">
@@ -65,7 +65,7 @@
         </view>
       </view>
 
-      <!-- 91/182/365 插值参考行（仅股指期货） -->
+      <!-- 91/182/365 插值参考行（仅股指） -->
       <view class="basis-ref-row" wx:if="{{currentTab !== 'commodity'}}">
         <view class="basis-ref-item">
           91 <text class="basis-ref-val {{item.ref91Class}}">{{item.ref91}}</text>
@@ -100,10 +100,10 @@
         </view>
       </view>
 
-      <!-- 期货期限结构表格 -->
+      <!-- 期限结构表格 -->
       <view class="section-title">
         <view class="section-title-bar"></view>
-        <text>期货期限结构</text>
+        <text>期限结构</text>
       </view>
       <view class="contract-table">
         <view class="table-hd">

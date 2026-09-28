@@ -1,3 +1,17 @@
+// 完整四个 tab（资源 / 升贴水 / 矩阵 / 晨报）
+var ALL_TABS = [
+  { tab: 'resource', icon: '📁' },
+  { tab: 'basis', icon: '📈' },
+  { tab: 'forex', icon: '💱' },
+  { tab: 'quotes', icon: '📰' }
+];
+
+// test 账号仅可见「资源 / 晨报」两个 tab
+var TEST_TABS = [
+  { tab: 'resource', icon: '📁' },
+  { tab: 'quotes', icon: '📰' }
+];
+
 Component({
   properties: {
     active: {
@@ -8,11 +22,13 @@ Component({
 
   data: {
     showBubble: false,
-    bubbleLeft: 0
+    bubbleLeft: 0,
+    tabs: []
   },
 
   lifetimes: {
     attached: function () {
+      this._initTabs();
       this._initBubble();
       this._checkReport();
     }
@@ -20,11 +36,19 @@ Component({
 
   pageLifetimes: {
     show: function () {
+      this._initTabs();
+      this._initBubble();
       this._checkReport();
     }
   },
 
   methods: {
+    _initTabs: function () {
+      var app = getApp();
+      var user = (app && app.globalData && app.globalData.loginUser) || '';
+      this.setData({ tabs: user === 'test' ? TEST_TABS : ALL_TABS });
+    },
+
     onTap: function (e) {
       var tab = e.currentTarget.dataset.tab;
       // 点击晨报：立即标记已读，隐藏气泡
@@ -36,12 +60,19 @@ Component({
     },
 
     /**
-     * 计算气泡水平位置：四栏布局下晨报 Tab 位于右侧第四个(7/8)，气泡宽 220rpx，居中于该点
+     * 计算气泡水平位置：定位到「晨报」Tab 的中心（随可见 Tab 数量自适应）
      */
     _initBubble: function () {
       var app = getApp();
       var w = (app && app.globalData && app.globalData.screenWidth) || 375;
-      var left = w * (7 / 8) - (220 / 750) * w / 2;
+      var tabs = this.data.tabs;
+      var quotesIndex = -1;
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].tab === 'quotes') { quotesIndex = i; break; }
+      }
+      var count = tabs.length || 1;
+      var center = w * ((2 * quotesIndex + 1) / (2 * count));
+      var left = center - (220 / 750) * w / 2;
       this.setData({ bubbleLeft: Math.round(left) });
     },
 

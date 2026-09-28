@@ -1,4 +1,4 @@
-/* 外汇页 */
+/* 矩阵页 */
 
 page {
   background: #f0f2f5;
@@ -70,7 +70,7 @@ page {
 }
 .matrix-row-label { flex-direction: column; }
 
-/* 币种代码 + 国旗 */
+/* 类别代码 */
 .hd-label {
   font-size: 22rpx;
   font-weight: 700;

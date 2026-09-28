@@ -13,7 +13,8 @@ Page({
   onLoad: function () {
     var app = getApp();
     if (app.globalData.isLoggedIn) {
-      wx.redirectTo({ url: '/pages/index/index' });
+      var target = app.globalData.loginUser === 'test' ? '/pages/resources/resources' : '/pages/index/index';
+      wx.redirectTo({ url: target });
       return;
     }
     var lastUser = wx.getStorageSync('lastUsername');
@@ -62,7 +63,8 @@ Page({
         app.globalData.isLoggedIn = true;
         app.globalData.loginUser = username;
         that.setData({ loading: false });
-        wx.redirectTo({ url: '/pages/index/index' });
+        var target = username === 'test' ? '/pages/resources/resources' : '/pages/index/index';
+        wx.redirectTo({ url: target });
       } else {
         that.setData({
           loading: false,

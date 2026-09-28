@@ -66,6 +66,12 @@ Page({
       return;
     }
 
+    // test 账号仅可见资源/晨报，不允许进入本页
+    if (app.globalData.loginUser === 'test') {
+      wx.redirectTo({ url: '/pages/resources/resources' });
+      return;
+    }
+
     // 同步当前用户名与所属部门
     var user = app.globalData.loginUser || '';
     this.setData({

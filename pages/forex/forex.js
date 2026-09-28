@@ -1,9 +1,9 @@
 var app = getApp();
 var api = require('../../utils/api.js');
 
-// 币种定义（key 用于展示，code 用于新浪，name 中文名，scale 为行单位倍数）
+// 类别定义（key 用于展示，code 用于新浪，name 中文名，scale 为行单位倍数）
 var CURRENCIES = [
-  { key: 'CHN', code: 'CNY', name: '人民币', scale: 1 },
+  { key: 'CNY', code: 'CNY', name: '人民币', scale: 1 },
   { key: 'USD', code: 'USD', name: '美元', scale: 1 },
   { key: 'EUR', code: 'EUR', name: '欧元', scale: 1 },
   { key: 'HKD', code: 'HKD', name: '港元', scale: 1 },
@@ -73,7 +73,7 @@ Page({
   onLoad: function () {
     this.setData({
       currencyList: CURRENCIES.map(function (c) {
-        return c.key + ' ' + c.name;
+        return c.key;
       })
     });
     this._refresh();
@@ -82,6 +82,10 @@ Page({
   onShow: function () {
     if (!app.globalData.isLoggedIn) {
       wx.redirectTo({ url: '/pages/login/login' });
+      return;
+    }
+    if (app.globalData.loginUser === 'test') {
+      wx.redirectTo({ url: '/pages/resources/resources' });
       return;
     }
     var user = app.globalData.loginUser || '';
@@ -117,7 +121,7 @@ Page({
         byCode[data.items[i].code] = data.items[i];
       }
 
-      // rateByCur: { CNY: {...}, USD: {...}, ... } 单位 = 人民币/币种
+      // rateByCur: { CNY: {...}, USD: {...}, ... } 单位 = 人民币/类别
       var rateByCur = {
         CNY: { latest: 1, prevClose: 1, bid: 1, ask: 1, high: 1, low: 1 }
       };
@@ -151,7 +155,7 @@ Page({
   },
 
   /**
-   * 构建汇率矩阵：cell(row, col) = 1 单位「行币种」兑换的「列币种」数量
+   * 构建汇率矩阵：cell(row, col) = 1 单位「行类别」兑换的「列类别」数量
    */
   _buildMatrix: function () {
     var rateByCur = this._rateByCur;
@@ -273,9 +277,9 @@ Page({
 
     this.setData({
       popupVisible: true,
-      popupPair: r.name + ' / ' + c.name,
+      popupPair: r.key + ' / ' + c.key,
       popupCode: r.code + '/' + c.code,
-      popupDesc: (scale === 1 ? '1 ' + r.name : scale + ' ' + r.name) + ' = ' + fmtPrice(latest) + ' ' + c.name,
+      popupDesc: (scale === 1 ? '1 ' + r.key : scale + ' ' + r.key) + ' = ' + fmtPrice(latest) + ' ' + c.key,
       popupLatest: fmtPrice(latest),
       popupChange: fmtChg(change),
       popupChangePercent: changePercent == null ? '--'
@@ -322,7 +326,7 @@ Page({
 
   /**
    * 计算目标金额并展示当前汇率
-   * 目标金额 = 原始金额 × (1 单位原始币种 = X 目标币种)；JPY 作原始币种时按 100 倍展示
+   * 目标金额 = 原始金额 × (1 单位原始类别 = X 目标类别)；JPY 作原始类别时按 100 倍展示
    */
   _recalc: function () {
     var source = CURRENCIES[this.data.sourceIndex];
@@ -340,8 +344,8 @@ Page({
     var rate1 = rs.latest / rt.latest;
     var scale = source.scale || 1;
     var rateShow = rate1 * scale;
-    var rateText = (scale === 1 ? '1 ' + source.name : scale + ' ' + source.name)
-      + ' = ' + rateShow.toFixed(4) + ' ' + target.name;
+    var rateText = (scale === 1 ? '1 ' + source.key : scale + ' ' + source.key)
+      + ' = ' + rateShow.toFixed(4) + ' ' + target.key;
 
     var amount = parseFloat(this.data.sourceAmount);
     var result = (!isNaN(amount) && amount >= 0) ? (amount * rate1).toFixed(4) : '';

@@ -29,16 +29,6 @@
   font-size: 36rpx;
 }
 
-.bar-label {
-  font-size: 20rpx;
-  margin-top: 2rpx;
-  font-weight: 500;
-}
-
-.bar-item.active .bar-label {
-  font-weight: 700;
-}
-
 /* 晨报更新气泡提示 */
 .morning-bubble {
   position: fixed;
