@@ -77,10 +77,6 @@ page {
   color: #6b7280;
   line-height: 1.2;
 }
-.hd-flag {
-  font-size: 30rpx;
-  line-height: 1.15;
-}
 
 /* 单元格（表头与数据共用固定宽度，保证对齐） */
 .matrix-col-head {

@@ -38,14 +38,12 @@
           <view class="matrix-corner"></view>
           <view class="matrix-col-head" wx:for="{{columns}}" wx:key="key">
             <text class="hd-label">{{item.key}}</text>
-            <text class="hd-flag">{{item.flag}}</text>
           </view>
         </view>
         <!-- 数据行 -->
         <view class="matrix-row" wx:for="{{rows}}" wx:for-item="row" wx:key="key">
           <view class="matrix-row-label">
             <text class="hd-label">{{row.rowLabel}}</text>
-            <text class="hd-flag">{{row.flag}}</text>
           </view>
           <view class="matrix-col-head" wx:for="{{row.cells}}" wx:for-item="cell" wx:key="key">
             <view wx:if="{{cell.isEmpty}}" class="cell-empty"></view>

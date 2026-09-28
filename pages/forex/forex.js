@@ -1,15 +1,14 @@
 var app = getApp();
 var api = require('../../utils/api.js');
 
-// 币种定义（key 用于展示，code 用于新浪，name 中文名）
-// 币种定义（key 用于展示，code 用于新浪，name 中文名，scale 为行单位倍数，flag 国旗）
+// 币种定义（key 用于展示，code 用于新浪，name 中文名，scale 为行单位倍数）
 var CURRENCIES = [
-  { key: 'CHN', code: 'CNY', name: '人民币', scale: 1, flag: '🇨🇳' },
-  { key: 'USD', code: 'USD', name: '美元', scale: 1, flag: '🇺🇸' },
-  { key: 'EUR', code: 'EUR', name: '欧元', scale: 1, flag: '🇪🇺' },
-  { key: 'HKD', code: 'HKD', name: '港元', scale: 1, flag: '🇭🇰' },
-  { key: 'GBP', code: 'GBP', name: '英镑', scale: 1, flag: '🇬🇧' },
-  { key: 'JPY', code: 'JPY', name: '日元', scale: 100, flag: '🇯🇵' }
+  { key: 'CHN', code: 'CNY', name: '人民币', scale: 1 },
+  { key: 'USD', code: 'USD', name: '美元', scale: 1 },
+  { key: 'EUR', code: 'EUR', name: '欧元', scale: 1 },
+  { key: 'HKD', code: 'HKD', name: '港元', scale: 1 },
+  { key: 'GBP', code: 'GBP', name: '英镑', scale: 1 },
+  { key: 'JPY', code: 'JPY', name: '日元', scale: 100 }
 ];
 
 var autoRefreshTimer = null;
@@ -74,7 +73,7 @@ Page({
   onLoad: function () {
     this.setData({
       currencyList: CURRENCIES.map(function (c) {
-        return c.flag + ' ' + c.key + ' ' + c.name;
+        return c.key + ' ' + c.name;
       })
     });
     this._refresh();
@@ -159,7 +158,7 @@ Page({
     if (!rateByCur) return;
 
     var columns = CURRENCIES.map(function (c) {
-      return { key: c.key, code: c.code, name: c.name, flag: c.flag };
+      return { key: c.key, code: c.code, name: c.name };
     });
 
     var rows = [];
@@ -188,7 +187,6 @@ Page({
         key: r.key,
         code: r.code,
         name: r.name,
-        flag: r.flag,
         rowLabel: scale === 1 ? r.key : (scale + r.key),
         cells: cells
       });
