@@ -277,6 +277,8 @@ Page({
   onBarChange: function (e) {
     if (e.detail.tab === 'basis') {
       wx.redirectTo({ url: '/pages/index/index' });
+    } else if (e.detail.tab === 'forex') {
+      wx.redirectTo({ url: '/pages/forex/forex' });
     } else if (e.detail.tab === 'quotes') {
       wx.redirectTo({ url: '/pages/quotes/quotes' });
     }

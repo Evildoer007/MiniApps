@@ -10,6 +10,10 @@
       <cover-view class="bar-icon">📈</cover-view>
       <cover-view class="bar-label">升贴水</cover-view>
     </cover-view>
+    <cover-view class="bar-item {{active === 'forex' ? 'active' : ''}}" data-tab="forex" bindtap="onTap">
+      <cover-view class="bar-icon">💱</cover-view>
+      <cover-view class="bar-label">外汇</cover-view>
+    </cover-view>
     <cover-view class="bar-item {{active === 'quotes' ? 'active' : ''}}" data-tab="quotes" bindtap="onTap">
       <cover-view class="bar-icon">📰</cover-view>
       <cover-view class="bar-label">晨报</cover-view>

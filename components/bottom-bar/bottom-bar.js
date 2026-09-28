@@ -36,12 +36,12 @@ Component({
     },
 
     /**
-     * 计算气泡水平位置：三栏布局下晨报 Tab 位于右侧第三个(5/6)，气泡宽 220rpx，居中于该点
+     * 计算气泡水平位置：四栏布局下晨报 Tab 位于右侧第四个(7/8)，气泡宽 220rpx，居中于该点
      */
     _initBubble: function () {
       var app = getApp();
       var w = (app && app.globalData && app.globalData.screenWidth) || 375;
-      var left = w * (5 / 6) - (220 / 750) * w / 2;
+      var left = w * (7 / 8) - (220 / 750) * w / 2;
       this.setData({ bubbleLeft: Math.round(left) });
     },
 

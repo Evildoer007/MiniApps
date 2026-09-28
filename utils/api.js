@@ -220,12 +220,75 @@ function fetchAllCommodityData(futuresCodes, spotCodes) {
   });
 }
 
+/**
+ * 解析外汇数据
+ * 新浪外汇 fx_ 格式：
+ *   [0] 时间, [1] 买价, [2] 卖价, [3] 昨收价
+ *   [4] 成交量, [5] 均价, [6] 最高价, [7] 最低价, [8] 最新价
+ *   [9] 名称, [10] 涨跌幅%, [11] 涨跌额, [12] 振幅
+ *   [14] 52周高, [15] 52周低, [17] 日期
+ */
+function parseForexData(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  var fields = raw.split(',');
+  if (fields.length < 12) return null;
+  var latest = parseFloat(fields[8]);
+  var prevClose = parseFloat(fields[3]);
+  if (isNaN(latest) || latest === 0) return null;
+  var change = null;
+  var changePercent = null;
+  if (!isNaN(prevClose) && prevClose !== 0) {
+    change = +(latest - prevClose).toFixed(4);
+    changePercent = +((latest - prevClose) / prevClose * 100).toFixed(4);
+  }
+  return {
+    name: fields[9] || '',
+    latest: latest,
+    prevClose: prevClose,
+    bid: parseFloat(fields[1]),
+    ask: parseFloat(fields[2]),
+    high: parseFloat(fields[6]),
+    low: parseFloat(fields[7]),
+    volume: parseInt(fields[4], 10) || 0,
+    change: change,
+    changePercent: changePercent,
+    time: fields[0] || ''
+  };
+}
+
+/**
+ * 统一获取外汇行情
+ * @param {Array<string>} codes - 新浪外汇代码列表（fx_ 前缀）
+ * @returns {Promise<Object>} { items: [...], timestamp, marketOpen }
+ */
+function fetchForexData(codes) {
+  return fetchSinaRaw(codes).then(function (rawData) {
+    var items = [];
+    for (var i = 0; i < codes.length; i++) {
+      var code = codes[i];
+      var raw = rawData[code];
+      var parsed = raw ? parseForexData(raw) : null;
+      if (parsed) {
+        parsed.code = code;
+        items.push(parsed);
+      }
+    }
+    return {
+      items: items,
+      timestamp: new Date(),
+      marketOpen: isTradingSession()
+    };
+  });
+}
+
 module.exports = {
   parseFuturesData: parseFuturesData,
   parseShfeFuturesData: parseShfeFuturesData,
   parseSpotData: parseSpotData,
+  parseForexData: parseForexData,
   fetchAllData: fetchAllData,
   fetchAllCommodityData: fetchAllCommodityData,
+  fetchForexData: fetchForexData,
   fetchSinaRaw: fetchSinaRaw,
   isTradingSession: isTradingSession
 };

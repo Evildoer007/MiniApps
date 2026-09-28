@@ -1,0 +1,118 @@
+<!-- 外汇页面 -->
+<scroll-view scroll-y class="page-scroll">
+
+  <!-- Header -->
+  <view class="app-header">
+    <view class="header-top">
+      <view class="logo-row">
+        <button class="btn-logout-top" bindtap="onLogout">注销登录</button>
+        <button class="btn-admin-top" bindtap="onAdminPwd" wx:if="{{loginUser === 'Jason'}}">修改密码</button>
+      </view>
+      <view class="header-right">
+        <text>内部使用请勿外传</text>
+        <text class="login-user-tag">当前用户：{{loginUser}}</text>
+      </view>
+    </view>
+    <view class="app-title">外汇</view>
+    <view class="update-time">
+      <text>{{updateTimeText}}</text>
+    </view>
+
+    <!-- 工具栏 -->
+    <view class="header-toolbar">
+      <button class="btn btn-primary" bindtap="onManualRefresh">🔄 刷新</button>
+      <label class="toggle-label">
+        <switch class="toggle-switch" checked="{{autoRefresh}}" bindchange="onAutoRefreshChange" color="#2563eb" />
+        <text>自动刷新</text>
+      </label>
+    </view>
+  </view>
+
+  <!-- 汇率矩阵 -->
+  <view class="matrix-wrap">
+    <view class="matrix-hint">每一格 = 1 单位「横币种」兑换的「竖币种」数量，点击查看详情</view>
+    <scroll-view scroll-x class="matrix-scroll">
+      <view class="matrix">
+        <!-- 表头行 -->
+        <view class="matrix-row matrix-head">
+          <view class="matrix-corner"></view>
+          <view class="matrix-col-head" wx:for="{{columns}}" wx:key="key">
+            <text class="hd-label">{{item.key}}</text>
+            <text class="hd-flag">{{item.flag}}</text>
+          </view>
+        </view>
+        <!-- 数据行 -->
+        <view class="matrix-row" wx:for="{{rows}}" wx:for-item="row" wx:key="key">
+          <view class="matrix-row-label">
+            <text class="hd-label">{{row.rowLabel}}</text>
+            <text class="hd-flag">{{row.flag}}</text>
+          </view>
+          <view class="matrix-col-head" wx:for="{{row.cells}}" wx:for-item="cell" wx:key="key">
+            <view wx:if="{{cell.isEmpty}}" class="cell-empty"></view>
+            <view wx:else
+                  class="cell-value"
+                  data-row="{{cell.row}}"
+                  data-col="{{cell.col}}"
+                  bindtap="onCellTap">{{cell.text}}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="bottom-gap"></view>
+
+  <view class="app-footer">
+    <view class="footer-credit">Designed by Jason</view>
+    <view class="footer-icp">ICP备案/许可证号: 沪ICP备2026026962号-2</view>
+  </view>
+
+</scroll-view>
+
+<!-- Toast -->
+<view class="toast-container" wx:if="{{toastVisible}}">
+  <view class="toast">{{toastMessage}}</view>
+</view>
+
+<!-- 行情详情浮窗 -->
+<view class="popup-overlay" wx:if="{{popupVisible}}" catchtap="onPopupClose" catchtouchmove="stopPropagation">
+  <view class="popup-card" catchtap="stopPropagation" catchtouchmove="stopPropagation">
+    <view class="popup-header">
+      <view class="popup-title">
+        <text class="popup-pair">{{popupPair}}</text>
+        <text class="popup-code">{{popupCode}}</text>
+      </view>
+      <view class="popup-close" bindtap="onPopupClose">✕</view>
+    </view>
+
+    <view class="popup-latest {{popupChangeClass}}">{{popupLatest}}</view>
+    <view class="popup-change-row {{popupChangeClass}}">
+      <text class="popup-change">{{popupChange}}</text>
+      <text class="popup-change-pct">{{popupChangePercent}}</text>
+    </view>
+
+    <view class="popup-desc">{{popupDesc}}</view>
+
+    <view class="popup-grid">
+      <view class="popup-grid-item">
+        <text class="popup-grid-k">买价</text>
+        <text class="popup-grid-v">{{popupBid}}</text>
+      </view>
+      <view class="popup-grid-item">
+        <text class="popup-grid-k">卖价</text>
+        <text class="popup-grid-v">{{popupAsk}}</text>
+      </view>
+      <view class="popup-grid-item">
+        <text class="popup-grid-k">最高</text>
+        <text class="popup-grid-v">{{popupHigh}}</text>
+      </view>
+      <view class="popup-grid-item">
+        <text class="popup-grid-k">最低</text>
+        <text class="popup-grid-v">{{popupLow}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 底部导航栏 -->
+<bottom-bar active="forex" bind:change="onBarChange"></bottom-bar>

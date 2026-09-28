@@ -759,6 +759,9 @@ Page({
     if (e.detail.tab === 'quotes') {
       this._stopAutoRefresh();
       wx.redirectTo({ url: '/pages/quotes/quotes' });
+    } else if (e.detail.tab === 'forex') {
+      this._stopAutoRefresh();
+      wx.redirectTo({ url: '/pages/forex/forex' });
     } else if (e.detail.tab === 'resource') {
       this._stopAutoRefresh();
       wx.redirectTo({ url: '/pages/resources/resources' });

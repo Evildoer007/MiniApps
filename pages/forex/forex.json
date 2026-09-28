@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "bottom-bar": "/components/bottom-bar/bottom-bar"
+  },
+  "navigationBarTitleText": "Jason金点子",
+  "disableScroll": true
+}
