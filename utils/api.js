@@ -234,7 +234,11 @@ function parseForexData(raw) {
   if (fields.length < 12) return null;
   var latest = parseFloat(fields[8]);
   var prevClose = parseFloat(fields[3]);
+  var bid = parseFloat(fields[1]);
+  var ask = parseFloat(fields[2]);
   if (isNaN(latest) || latest === 0) return null;
+  // 中间价 = (买价 + 卖价) / 2，买卖价缺失时回退最新价
+  var mid = (bid > 0 && ask > 0) ? (bid + ask) / 2 : latest;
   var change = null;
   var changePercent = null;
   if (!isNaN(prevClose) && prevClose !== 0) {
@@ -244,9 +248,10 @@ function parseForexData(raw) {
   return {
     name: fields[9] || '',
     latest: latest,
+    mid: mid,
     prevClose: prevClose,
-    bid: parseFloat(fields[1]),
-    ask: parseFloat(fields[2]),
+    bid: bid,
+    ask: ask,
     high: parseFloat(fields[6]),
     low: parseFloat(fields[7]),
     volume: parseInt(fields[4], 10) || 0,

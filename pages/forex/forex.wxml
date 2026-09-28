@@ -60,6 +60,38 @@
     </scroll-view>
   </view>
 
+  <!-- 汇率计算器 -->
+  <view class="calc-card">
+    <view class="calc-title">汇率计算器</view>
+
+    <view class="calc-row">
+      <text class="calc-label">原始币种</text>
+      <picker mode="selector" range="{{currencyList}}" value="{{sourceIndex}}" bindchange="onSourceChange" class="calc-picker">
+        <view class="calc-picker-value">{{currencyList[sourceIndex]}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="calc-row">
+      <text class="calc-label">原始金额</text>
+      <input class="calc-input" type="digit" value="{{sourceAmount}}" placeholder="请输入金额" bindinput="onAmountInput" />
+    </view>
+
+    <view class="calc-row">
+      <text class="calc-label">目标币种</text>
+      <picker mode="selector" range="{{currencyList}}" value="{{targetIndex}}" bindchange="onTargetChange" class="calc-picker">
+        <view class="calc-picker-value">{{currencyList[targetIndex]}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="calc-divider"></view>
+
+    <view class="calc-row">
+      <text class="calc-label">目标金额</text>
+      <text class="calc-result">{{targetAmount || '—'}}</text>
+    </view>
+    <view class="calc-rate">{{rateText}}</view>
+  </view>
+
   <view class="bottom-gap"></view>
 
   <view class="app-footer">

@@ -61,10 +61,22 @@ Page({
     popupBid: '--',
     popupAsk: '--',
     popupHigh: '--',
-    popupLow: '--'
+    popupLow: '--',
+    // 汇率计算器
+    currencyList: [],
+    sourceIndex: 1,
+    targetIndex: 0,
+    sourceAmount: '',
+    targetAmount: '',
+    rateText: ''
   },
 
   onLoad: function () {
+    this.setData({
+      currencyList: CURRENCIES.map(function (c) {
+        return c.flag + ' ' + c.key + ' ' + c.name;
+      })
+    });
     this._refresh();
   },
 
@@ -114,11 +126,23 @@ Page({
         var cur = CURRENCIES[j];
         if (cur.code === 'CNY') continue;
         var code = 'fx_s' + cur.code.toLowerCase() + 'cny';
-        if (byCode[code]) rateByCur[cur.code] = byCode[code];
+        var item = byCode[code];
+        if (item) {
+          // 汇率基准采用中间价 (买价+卖价)/2，昨收价即昨收中间价
+          rateByCur[cur.code] = {
+            latest: item.mid,
+            prevClose: item.prevClose,
+            bid: item.bid,
+            ask: item.ask,
+            high: item.high,
+            low: item.low
+          };
+        }
       }
 
       that._rateByCur = rateByCur;
       that._buildMatrix();
+      that._recalc();
       that._updateTimestamp();
       that.setData({ loadingVisible: false });
     }).catch(function () {
@@ -279,6 +303,52 @@ Page({
       if (CURRENCIES[i].code === code) return CURRENCIES[i];
     }
     return null;
+  },
+
+  // ==================== 汇率计算器 ====================
+
+  onSourceChange: function (e) {
+    this.setData({ sourceIndex: +e.detail.value });
+    this._recalc();
+  },
+
+  onTargetChange: function (e) {
+    this.setData({ targetIndex: +e.detail.value });
+    this._recalc();
+  },
+
+  onAmountInput: function (e) {
+    this.setData({ sourceAmount: e.detail.value });
+    this._recalc();
+  },
+
+  /**
+   * 计算目标金额并展示当前汇率
+   * 目标金额 = 原始金额 × (1 单位原始币种 = X 目标币种)；JPY 作原始币种时按 100 倍展示
+   */
+  _recalc: function () {
+    var source = CURRENCIES[this.data.sourceIndex];
+    var target = CURRENCIES[this.data.targetIndex];
+    var rateByCur = this._rateByCur;
+    if (!rateByCur || !source || !target) return;
+
+    var rs = rateByCur[source.code];
+    var rt = rateByCur[target.code];
+    if (!rs || !rt || !rt.latest) {
+      this.setData({ targetAmount: '', rateText: '' });
+      return;
+    }
+
+    var rate1 = rs.latest / rt.latest;
+    var scale = source.scale || 1;
+    var rateShow = rate1 * scale;
+    var rateText = (scale === 1 ? '1 ' + source.name : scale + ' ' + source.name)
+      + ' = ' + rateShow.toFixed(4) + ' ' + target.name;
+
+    var amount = parseFloat(this.data.sourceAmount);
+    var result = (!isNaN(amount) && amount >= 0) ? (amount * rate1).toFixed(4) : '';
+
+    this.setData({ targetAmount: result, rateText: rateText });
   },
 
   onLogout: function () {
