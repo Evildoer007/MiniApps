@@ -777,6 +777,9 @@ Page({
   // ==================== 历史基差弹出层 ====================
 
   onContractTap: function (e) {
+    // 商品期货没有历史基差数据（/api/historical-basis 仅股指），禁点
+    if (this.data.currentTab === 'commodity') return;
+
     var contract = e.currentTarget.dataset.contract;
     if (!contract) return;
 

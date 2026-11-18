@@ -1,4 +1,4 @@
-// 完整四个 tab（资源 / 升贴水 / 矩阵 / 晨报）
+// 完整四个 tab（资源 / 升贴水 / 外汇 / 晨报）
 var ALL_TABS = [
   { tab: 'resource', icon: '📁' },
   { tab: 'basis', icon: '📈' },
@@ -72,7 +72,7 @@ Component({
       }
       var count = tabs.length || 1;
       var center = w * ((2 * quotesIndex + 1) / (2 * count));
-      var left = center - (220 / 750) * w / 2;
+      var left = center - (120 / 750) * w / 2;
       this.setData({ bubbleLeft: Math.round(left) });
     },
 

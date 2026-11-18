@@ -1,4 +1,4 @@
-<!-- 矩阵页面 -->
+<!-- 外汇页面 -->
 <scroll-view scroll-y class="page-scroll">
 
   <!-- Header -->
@@ -13,7 +13,7 @@
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
       </view>
     </view>
-    <view class="app-title">矩阵</view>
+    <view class="app-title">外汇</view>
     <view class="update-time">
       <text>{{updateTimeText}}</text>
     </view>
