@@ -13,7 +13,7 @@
         <text class="login-user-tag">当前用户：{{loginUser}}</text>
       </view>
     </view>
-    <view class="app-title">晨报</view>
+    <view class="app-title">金点子</view>
   </view>
 
   <!-- 管理员编辑区 -->
